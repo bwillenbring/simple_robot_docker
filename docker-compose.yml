@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  ##################################################################
+  robot:
+    build:
+      context: .
+    shm_size: '2gb'
+    volumes:
+      - ./fixtures:/opt/robotframework/fixtures:Z
+      - ./libraries:/opt/robotframework/libraries:Z
+      - ./listeners:/opt/robotframework/listeners:Z
+      - ./reports:/opt/robotframework/reports:Z
+      - ./test:/opt/robotframework/test:Z
+      - ./testLauncher:/opt/robotframework/testLauncher:Z
+
+    environment:
+      # All env vars documented in README.md
+      BASE_URL: https://bwillenbring1.shotgunstudio.com
+      BROWSER: chrome
+      USERNAME: ******
+      PASSWORD: ******
+      TEST_PROJECT_ID: 115
+      ROBOT_LISTENER: /opt/robotframework/listeners/CustomListener.py
+      ROBOT_OUTPUTDIR: /opt/robotframework/reports
+      ROBOT_SPECS: /opt/robotframework/test/simple-keywords.robot
+    command: python testLauncher/testLauncher.py
+    # command: ["xvfb-run", "robot", "/opt/robotframework/test/simple.robot"]
