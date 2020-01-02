@@ -17,8 +17,8 @@ services:
       # All env vars documented in README.md
       BASE_URL: https://bwillenbring1.shotgunstudio.com
       BROWSER: chrome
-      USERNAME: ******
-      PASSWORD: ******
+      USERNAME:
+      PASSWORD: 
       TEST_PROJECT_ID: 115
       ROBOT_LISTENER: /opt/robotframework/listeners/CustomListener.py
       ROBOT_OUTPUTDIR: /opt/robotframework/reports

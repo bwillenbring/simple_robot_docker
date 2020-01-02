@@ -18,14 +18,42 @@ git clone https://github.com/bwillenbring/simple_robot_docker.git
 
 | Env. Variable | Notes |
 | ------------- | ----- |
-| `BASE_URL` | An URL for a valid Shotgun Site |
 | `BROWSER` | One of the following: `chrome` or `firefox` (in lowercase)|
-| `USERNAME` | A valid admin username for your Shotgun site. |
-| `PASSWORD` | A valid password for your Shotgun username. |
-| `TEST_PROJECT_ID` | A valid Shotgun project id. |
+
+Note: no other values need to be changed in order to run the sample test spec.
 
 #### 3. Build the container
 `cd` into the directory that contains `docker-compose.yml`, then do this...
 ```
 docker-compose build
 ```
+
+### 4. Bring the container up and see a single Robot test run...
+From the directory that contains `docker-compose.yml`, then do this...
+```
+docker-compose up robot
+```
+Doing the above will result in the execution of `simple-keywords.robot` from within the container. You'll see this kind of output...
+```
+Starting robotv3_robot_1 ... done
+Attaching to robotv3_robot_1
+robot_1  | ==============================================================================
+robot_1  | Simple-Keywords                                                               
+robot_1  | ==============================================================================
+robot_1  | Robot test suite is starting...
+robot_1  | Do a google search and click on the top search result                 | PASS |
+robot_1  | ------------------------------------------------------------------------------
+robot_1  | Robot test suite has ended...
+robot_1  | Simple-Keywords                                                       | PASS |
+robot_1  | 1 critical test, 1 passed, 0 failed
+robot_1  | 1 test total, 1 passed, 0 failed
+robot_1  | ==============================================================================
+robot_1  | Output:  /opt/robotframework/reports/output.xml
+robot_1  | Log:     /opt/robotframework/reports/log.html
+robot_1  | Report:  /opt/robotframework/reports/report.html
+```
+The last line should show an `exit code of 0`:
+```
+robotv3_robot_1 exited with code 0
+```
+If not, the test failed :grimacing:
