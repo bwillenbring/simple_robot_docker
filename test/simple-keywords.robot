@@ -9,7 +9,7 @@ Suite Teardown      Quit
 *** Variables ***
 ${BASE_URL}         https://google.com
 ${BROWSER}          %{BROWSER}
-${SEARCHTERM}       Ben Willenbring & scrum master & doodler
+${SEARCHTERM}       Ben Willenbring & doodler & SAAS & scrappy generalist
 
 *** Test Cases ***
 Do a google search and click on the top search result
@@ -24,7 +24,7 @@ Do a google search and click on the top search result
     # Click the first search result's link
     Click Element    css:div.rc div.r a
     # Wait for the url to no longer be on google.com
-    Wait For Condition    return ! top.location.href.includes('google.com')
+    Wait For Condition    return ! (location.href.includes('google.com'))
     # Wait for the page to be ready
     Wait For Condition    return document.readyState == 'complete'
     # Take a screenshot
@@ -35,6 +35,8 @@ Do a google search and click on the top search result
 Begin Test Suite
     Open Browser    ${BASE_URL}     ${BROWSER}
     Maximize Browser Window
+    Set Selenium Timeout    10
+    Set Browser Implicit Wait    30
 
 Quit
     Close All Browsers
