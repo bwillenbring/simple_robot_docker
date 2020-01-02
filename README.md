@@ -8,7 +8,7 @@ Runnable tests with example test files for...
 ----
 
 ## How to Use this repo
-In addition to `git` you need is `Docker 18.06` or higher. [Install it here](https://www.google.com).
+In addition to `git`, all you need is `Docker 18.06` or higher. [Install it here](https://www.google.com).
 #### 1. Clone the repo locally
 ```
 git clone https://github.com/bwillenbring/simple_robot_docker.git
