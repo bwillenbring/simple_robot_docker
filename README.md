@@ -13,34 +13,59 @@
 
 ----
 
-## How to Use this repo
+## Installation & How to Use this Repo
 In addition to `git`, all you need is `Docker 18.06` or higher. [Install Docker here](https://docs.docker.com/install/).
 #### 1. Clone the repo locally
 ```
 git clone https://github.com/bwillenbring/simple_robot_docker.git
 ```
 
-#### 2. Optionally change the browser in `docker-compose.yml` <br/>
+----
+
+#### 2. Optionally change the browser in `docker-compose.yml`
+Skip this step if you just want to build and up the container, and see a simple test run.
 
 | Env. Variable | Notes |
 | ------------- | ----- |
 | `BROWSER` | <ul><li>`chrome` (default)</li><li>`firefox`</li></ul> |
 
-**Important Notes:**
-- No other env vars besides `BROWSER` need to be changed in order to run the sample test spec - `simple-keywords.robot`
+----
 
+##### 2.1 You can skip to step 3
+No env vars need to be changed in order to run the following test specs:
+- `simple-keywords.robot` (automatically run when you up the container)
+- `simple-python-libs.robot`
+- `simple-variables.robot`
 
-- To run `simple-file-upload-test.robot`, you'll need to set additional env. variables:
+----
+
+##### 2.2 Read this if you want to run the file upload test
+To run `simple-file-upload-test.robot`, you'll also need the following:
+- Access to a Shotgun Site ([spin up a free trial here](https://www.shotgunsoftware.com/trial/))
+- Correctly set env. variables in `docker-compose.yml`
   - `BASE_URL` - an URL to a valid Shotgun Site
   - `USERNAME` - a valid admin login for your Shotgun Site
   - `PASSWORD` - a valid password for your Shotgun login
-  - `TEST_PROJECT_ID` - a valid project id
+  - `TEST_PROJECT_ID` - a valid Shotgun project id
+
+
+- Correctly set `ROBOT_SPECS` in `docker-compose.yml`. Here's how...
+```bash
+# Change this...
+ROBOT_SPECS: /opt/robotframework/test/simple-keywords.robot
+# To this...
+ROBOT_SPECS: /opt/robotframework/test/simple-file-upload-test.robot
+```
+
+----
 
 #### 3. Build the container
 `cd` into the directory that contains `docker-compose.yml`, then do this...
 ```
 docker-compose build
 ```
+
+----
 
 #### 4. Bring the container up
 `cd` into the directory that contains `docker-compose.yml`, then do this...
