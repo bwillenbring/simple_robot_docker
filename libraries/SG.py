@@ -103,7 +103,7 @@ class ShotgunSite(object):
         # Implicit wait
         self.driver.implicitly_wait(os.environ.get('IMPLICITLY_WAIT', 10))
         # Page Load timeout
-        self.driver.set_page_load_timeout(os.environ.get('PAGE_LOAD_TIMEOUT', 60))
+        self.driver.set_page_load_timeout(os.environ.get('PAGE_LOAD_TIMEOUT', 30))
 
     def quit(self):
         self.driver.quit()
@@ -186,7 +186,7 @@ class ShotgunSite(object):
             return_value = self.execute_script(condition)
             return return_value == True
         # Now, wait for the function to return a Truthy value
-        WebDriverWait(self.driver, timeout=30).until(func)
+        WebDriverWait(self.driver, timeout=10).until(func)
 
     # ..................................................
     # ⬇ Wait until Logged in ⬇
@@ -201,11 +201,19 @@ class ShotgunSite(object):
 
 
 class Page(ShotgunSite):
-    def __init__(self, driver):
-        self.driver = driver
+    """To instantiate... p = SG.Page(ShotgunSiteInstance.driver)"""
+    def __init__(self, ShotgunSiteInstance, project_id=None):
+        self.project_id = project_id
+        super(Page, self).__init__(ShotgunSiteInstance.driver, ShotgunSiteInstance.baseUrl, ShotgunSiteInstance.browser)
 
     def reload(self):
         self.driver.refresh()
+
+    def navigate_to_project_page(self, entity_type=''):
+        """Navigates to a project entity query page"""
+
+    def navigate_to_page(self, page_id):
+        """Navigates to a page by id"""
 
 class EntityQueryPage(Page):
     def wait_for_page_to_load(self):
