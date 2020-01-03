@@ -62,12 +62,12 @@ If not, the test failed :grimacing:
 
 ## 3. Create and Run your own Robot tests
 **If you'd like to see a browser running your tests**
-1. If you haven't already done so, cd to the top level directory, and run...<br/>
-```bash
-pip install requirements.txt
-```
+1. If you haven't already done so, cd to the top level directory, and run... <br/><pre><code>pip install requirements.txt</code></pre>
+
 1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](test/simple-keywords.robot)
+
 1. Save your robot file into the `test` directory
+
 1. Open a shell, cd to the directory above `test`, and run this command: <br/>
 ```bash
 robot test/your_test_file.robot
