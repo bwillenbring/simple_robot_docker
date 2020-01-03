@@ -34,15 +34,7 @@ Skip this step if you just want to build and up the container, and see a simple 
 
 ----
 
-### 2.1 You can skip to step 3
-No env vars need to be changed in order to run the following test specs:
-- `simple-keywords.robot` (automatically run when you up the container)
-- `simple-python-libs.robot`
-- `simple-variables.robot`
-
-----
-
-### 2.2 Read this if you want to run the file upload test
+### 2.1 Read this if you want to run the file upload test
 To run `simple-file-upload-test.robot`, you'll also need the following:
 - Access to a Shotgun Site ([spin up a free trial here](https://www.shotgunsoftware.com/trial/))
 - Correctly set env. variables in `docker-compose.yml`
@@ -109,7 +101,7 @@ If not, the test failed :grimacing:
 - You've cloned the repo
 - You've already done `pip install requirements.txt`
 
-**How to do it (1-2-3 style)**
+**How to run your own Robot tests (1-2-3 style)**
 
 1. Create a new valid Robot test file and save it into the `test` directory
 1. Run this simple command: <br/>
