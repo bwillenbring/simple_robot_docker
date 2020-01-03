@@ -1,5 +1,5 @@
 *** Settings ***
-# Import the only external library you need
+# Import a standard python module and use it inside of Robot
 Library             ntpath
 
 *** Test Cases ***

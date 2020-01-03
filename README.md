@@ -11,11 +11,14 @@
 - [Sample test launch script in `testLauncher`](testLauncher/testLauncher.py)
 - [`requirements.txt`](requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
 
+**Assumes the following:**
+- You have git, and can clone a repo
+- You have `Docker 18.06` or higher [Install Docker here](https://docs.docker.com/install/).
+
 ----
 
 # Installation & How to Use this Repo
-In addition to `git`, all you need is `Docker 18.06` or higher. [Install Docker here](https://docs.docker.com/install/).
-## 1. Clone the repo locally
+## 1. Clone this repo locally
 ```
 git clone https://github.com/bwillenbring/simple_robot_docker.git
 ```
