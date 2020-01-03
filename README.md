@@ -13,7 +13,7 @@
 
 **Assumes the following:**
 - You have git, and can clone a repo
-- You have `Docker 18.06` or higher [Install Docker here](https://docs.docker.com/install/).
+- You have `Docker 18.06` or higher -- [You can install Docker here](https://docs.docker.com/install/).
 
 ----
 
@@ -51,18 +51,15 @@ robot_1  | =====================================================================
 robot_1  | Output:  /opt/robotframework/reports/output.xml
 robot_1  | Log:     /opt/robotframework/reports/log.html
 robot_1  | Report:  /opt/robotframework/reports/report.html
-```
-The last line should show an `exit code of 0`:
-```
 robotv3_robot_1 exited with code 0
 ```
-If not, the test failed :grimacing:
+The last line should show an `exit code of 0`. If not, the test failed :grimacing:
 
 ----
 
 ## 3. Create and Run your own Robot tests
-**If you'd like to see a browser running your tests**
+**To see a browser running your own tests, do this:**
 1. If you haven't already done so, cd to the top level directory, and run... <br/><pre><code>pip install requirements.txt</code></pre>
 1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](test/simple-keywords.robot)
 1. Save your robot file into the `test` directory
-1. Open a shell, cd to the directory above `test`, and run this command: <br/><pre><code>robot test/your_test_file.robot</code></pre> <br/>**Optionally** specify an outputdir (for reports & screenshots)... <pre><code>robot --outputdir reports test/your_test_file.robot</code></pre><br/>**Optionally** pass in a listener...<br/><pre><code>robot --outputdir reports --listener listeners/CustomListener.py test/your_test_file.robot</code></pre>
+1. Open a shell, cd to the directory above `test`, and run this command: <br/><pre><code>robot test/your_test_file.robot</code></pre> <br/>**Optionally** specify an `outputdir` (for reports & screenshots)... <pre><code>robot --outputdir reports test/your_test_file.robot</code></pre><br/>**Optionally** pass in a `listener`...<br/><pre><code>robot --outputdir reports --listener listeners/CustomListener.py test/your_test_file.robot</code></pre>
