@@ -1,26 +1,34 @@
 # Barebones Robot Docker Container
-Runnable tests with example test files for...
-- Robot keyword only tests (using `SeleniumLibrary`)
-- Robot keyword + Python scripts (using `robot.libraries.BuiltIn` and `robot.api.deco`)
-- Python only selenium tests - callable from Robot, or as standalone files
-
+**Includes the following:**
+- [Sample specs in the `test` directory](test/)
+- [Sample Robot Listener in the `listeners` directory](listeners/CustomListener.py) - with empty method calls that hook into start and end events
+- [Sample test launch script in `testLauncher`](testLauncher/testLauncher.py)
+- [`requirements.txt`](requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
 
 ----
 
 ## How to Use this repo
-In addition to `git`, all you need is `Docker 18.06` or higher. [Install it here](https://www.google.com).
+In addition to `git`, all you need is `Docker 18.06` or higher. [Install Docker here](https://docs.docker.com/install/).
 #### 1. Clone the repo locally
 ```
 git clone https://github.com/bwillenbring/simple_robot_docker.git
 ```
 
-#### 2. Modify `docker-compose.yml` in these ways: <br/>
+#### 2. Optionally change the browser in `docker-compose.yml` <br/>
 
 | Env. Variable | Notes |
 | ------------- | ----- |
-| `BROWSER` | One of the following: `chrome` or `firefox` (in lowercase)|
+| `BROWSER` | <ul><li>`chrome` (default)</li><li>`firefox`</li></ul> |
 
-Note: no other values need to be changed in order to run the sample test spec.
+**Important Notes:**
+- No other env vars besides `BROWSER` need to be changed in order to run the sample test spec - `simple-keywords.robot`
+
+
+- To run `simple-file-upload-test.robot`, you'll need to set additional env. variables:
+  - `BASE_URL` - an URL to a valid Shotgun Site
+  - `USERNAME` - a valid admin login for your Shotgun Site
+  - `PASSWORD` - a valid password for your Shotgun login
+  - `TEST_PROJECT_ID` - a valid project id
 
 #### 3. Build the container
 `cd` into the directory that contains `docker-compose.yml`, then do this...
@@ -28,12 +36,14 @@ Note: no other values need to be changed in order to run the sample test spec.
 docker-compose build
 ```
 
-### 4. Bring the container up and see a single Robot test run...
-From the directory that contains `docker-compose.yml`, then do this...
+#### 4. Bring the container up
+`cd` into the directory that contains `docker-compose.yml`, then do this...
 ```
 docker-compose up robot
 ```
-Doing the above will result in the execution of `simple-keywords.robot` from within the container. You'll see this kind of output...
+Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](test/simple-keywords.robot).
+
+You'll see this kind of output...
 ```
 Starting robotv3_robot_1 ... done
 Attaching to robotv3_robot_1
