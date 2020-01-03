@@ -25,48 +25,12 @@ git clone https://github.com/bwillenbring/simple_robot_docker.git
 
 ----
 
-## 2. Optionally change the browser in `docker-compose.yml`
-Skip this step if you just want to build and up the container, and see a simple test run.
-
-| Env. Variable | Notes |
-| ------------- | ----- |
-| `BROWSER` | <ul><li>`chrome` (default)</li><li>`firefox`</li></ul> |
-
-----
-
-### 2.1 Read this if you want to run the file upload test
-To run `simple-file-upload-test.robot`, you'll also need the following:
-- Access to a Shotgun Site ([spin up a free trial here](https://www.shotgunsoftware.com/trial/))
-- Correctly set env. variables in `docker-compose.yml`
-  - `BASE_URL` - an URL to a valid Shotgun Site
-  - `USERNAME` - a valid admin login for your Shotgun Site
-  - `PASSWORD` - a valid password for your Shotgun login
-  - `TEST_PROJECT_ID` - a valid Shotgun project id
-
-
-- Correctly set `ROBOT_SPECS` in `docker-compose.yml`. Here's how...
-```bash
-# Change this...
-ROBOT_SPECS: /opt/robotframework/test/simple-keywords.robot
-# To this...
-ROBOT_SPECS: /opt/robotframework/test/simple-file-upload-test.robot
-```
-
-----
-
-## 3. Build the container
+## 2. Build and up the container
 `cd` into the directory that contains `docker-compose.yml`, then do this...
 ```
-docker-compose build
+docker-compose up --build
 ```
 
-----
-
-## 4. Bring the container up
-`cd` into the directory that contains `docker-compose.yml`, then do this...
-```
-docker-compose up robot
-```
 Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](test/simple-keywords.robot).
 
 ### You'll see this kind of output...
@@ -96,15 +60,12 @@ If not, the test failed :grimacing:
 
 ----
 
-# Creating and Running your own Robot tests
-**Assumptions**
-- <u>**You want to see the browser running**</u>
-- You've cloned the repo
-- You've already done `pip install requirements.txt`
-- You know that the browser you intend to use is in your path
-
-## How to do it: 1-2-3 style
-
+## 3. Create and Run your own Robot tests
+**If you'd like to see a browser running your tests**
+1. If you haven't already done so, cd to the top level directory, and run...<br/>
+```bash
+pip install requirements.txt
+```
 1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](test/simple-keywords.robot)
 1. Save your robot file into the `test` directory
 1. Open a shell, cd to the directory above `test`, and run this command: <br/>
