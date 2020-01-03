@@ -14,7 +14,7 @@ Suite setup         Begin Test Suite
 Suite Teardown      Quit
 
 *** Variables ***
-${BASE_URL}         https://bwillenbring1.shotgunstudio.com
+${BASE_URL}         %{BASE_URL}
 ${BROWSER}          %{BROWSER}
 ${USERNAME}         %{USERNAME}
 ${PASSWORD}         %{PASSWORD}
