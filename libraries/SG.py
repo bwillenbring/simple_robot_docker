@@ -6,11 +6,13 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import time
 import re
 import os
 import sys
 import locators
+import inflection
 
 # --------------------------------------------------------------------------------
 # ⬇ ShotgunSite Class ⬇
@@ -27,7 +29,11 @@ class ShotgunSite(object):
         self._browser = browser
         self.browser = browser
 
-        robot_log('Launching browser %s' % self._browser)
+        # Set up default waits
+        self.IMPLICIT_WAIT = os.environ.get("IMPLICIT_WAIT", 1)
+        self.PAGE_LOAD_TIMEOUT = os.environ.get("PAGE_LOAD_TIMEOUT", 30)
+
+        # Set the webdriver
         self.driver = driver
 
     @property
@@ -101,9 +107,9 @@ class ShotgunSite(object):
         # Maximize window
         self.driver.maximize_window()
         # Implicit wait
-        self.driver.implicitly_wait(os.environ.get('IMPLICITLY_WAIT', 10))
+        self.driver.implicitly_wait(self.IMPLICIT_WAIT)
         # Page Load timeout
-        self.driver.set_page_load_timeout(os.environ.get('PAGE_LOAD_TIMEOUT', 30))
+        self.driver.set_page_load_timeout(self.PAGE_LOAD_TIMEOUT)
 
     def quit(self):
         self.driver.quit()
@@ -164,6 +170,10 @@ class ShotgunSite(object):
             robot_log('Confirming I am logged in...')
             self.wait_until_logged_in()
 
+    def logout(self):
+        self.get('/user/logout')
+        self.driver.delete_all_cookies()
+
     # ..................................................
     # ⬇ Execute Javascript ⬇
     # ..................................................
@@ -186,7 +196,7 @@ class ShotgunSite(object):
             return_value = self.execute_script(condition)
             return return_value == True
         # Now, wait for the function to return a Truthy value
-        WebDriverWait(self.driver, timeout=10).until(func)
+        WebDriverWait(self.driver, timeout=self.PAGE_LOAD_TIMEOUT).until(func)
 
     # ..................................................
     # ⬇ Wait until Logged in ⬇
@@ -200,6 +210,9 @@ class ShotgunSite(object):
         self.current_user = self.execute_script("return SG.globals.current_user")
 
 
+# --------------------------------------------------------------------------------
+# ⬇ Page Class ⬇
+# --------------------------------------------------------------------------------
 class Page(ShotgunSite):
     """To instantiate... p = SG.Page(ShotgunSiteInstance.driver)"""
     def __init__(self, ShotgunSiteInstance, project_id=None):
@@ -211,22 +224,63 @@ class Page(ShotgunSite):
 
     def navigate_to_project_page(self, entity_type=''):
         """Navigates to a project entity query page"""
+        # clean up the entity_type
+        entity_type = inflection.singularize(inflection.camelize(entity_type))
+        # Form the url...
+        url = '%s/page/project_default?entity_type=%s&project_id=%s' %(self.baseUrl, entity_type, self.project_id)
+        # Get the url...
+        self.get(url)
+        # Ensure the page is loaded...
+        self.wait_for_page_to_load()
+
+    def wait_for_page_to_load(self):
+        """Waits for the page to load"""
+        self.wait_for_condition(condition="return document.readyState === 'complete'")
+        self.wait_for_spinner()
+
+    def wait_for_spinner(self):
+        # Wait for the spinner to either NOT Exist or to be invisible
+        WebDriverWait(self.driver, self.IMPLICIT_WAIT).until(
+            EC.invisibility_of_element_located( locators.MainPageLocators.SPINNER )
+        )
 
     def navigate_to_page(self, page_id):
         """Navigates to a page by id"""
+        self.get(page_id)
 
-class EntityQueryPage(Page):
-    def wait_for_page_to_load(self):
-        self.wait_for_condition(condition="return document.readyState === 'complete'")
+    def get_page_mode(self):
+        mode = self.execute_script("return SG.globals.page.root_widget.get_child_widgets()[2].get_mode()")
+        return mode
+
+    def set_page_mode(self, mode):
+        self.toggle_page_mode(mode)
 
     def toggle_page_mode(self, mode):
-        robot_log('Changing Page mode to %s' % mode)
+        # Only click an element if the existing page mode != mode
+        if self.get_page_mode() != mode:
+            # Build a locator string from the passed in mode
+            locator_string = "locators.MainPageLocators.PAGEMODE_BUTTON_%s" % mode.upper()
+            # Create a locator object
+            locator = eval(locator_string)
+            # Click the locator
+            self.driver.find_element( *locator ).click()
+
+    def run_quick_filter(self, search_string=""):
+        # Click into the quick filter
+        l = locators.MainPageLocators.QUICK_FILTER_TEXT_INPUT
+        self.driver.find_element( *l ).click()
+        # Type a query
+        self.driver.find_element( *l ).send_keys(search_string)
+        # Hit return
+        self.driver.find_element( *l ).send_keys(Keys.RETURN)
+        # Wait for the spinner
+        self.wait_for_spinner()
+
+    def should_contain_text(self, text):
+        """Tests whether or not document.body's inner Text contains `text`"""
+        self.wait_for_condition('return document.body.innerText.includes("%s")' % text)
 
 
-
-# --------------------------------------------------------------------------------
-# ⬇ Page Class ⬇
-# --------------------------------------------------------------------------------
 
 
 
