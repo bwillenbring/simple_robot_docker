@@ -1,6 +1,12 @@
 # Barebones Robot Docker Container
+
+
+[repoImage]: fixtures/pipeline.jpg "Barebones Robot Docker Container"
+
+![repoImage]
+
 **Includes the following:**
-- [Sample specs in the `test` directory](test/)
+- [Sample Robot specs in the `test` directory](test/)
 - [Sample Robot Listener in the `listeners` directory](listeners/CustomListener.py) - with empty method calls that hook into start and end events
 - [Sample test launch script in `testLauncher`](testLauncher/testLauncher.py)
 - [`requirements.txt`](requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
