@@ -69,7 +69,7 @@ docker-compose up robot
 ```
 Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](test/simple-keywords.robot).
 
-You'll see this kind of output...
+### You'll see this kind of output...
 ```
 Starting robotv3_robot_1 ... done
 Attaching to robotv3_robot_1
@@ -96,15 +96,18 @@ If not, the test failed :grimacing:
 
 ----
 
-# Running your own Robot tests on your host machine (no Docker)
+# Creating and Running your own Robot tests
 **Assumptions**
+- <u>**You want to see the browser running**</u>
 - You've cloned the repo
 - You've already done `pip install requirements.txt`
+- You know that the browser you intend to use is in your path
 
-**How to run your own Robot tests (1-2-3 style)**
+## How to do it: 1-2-3 style
 
-1. Create a new valid Robot test file and save it into the `test` directory
-1. Run this simple command: <br/>
+1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](test/simple-keywords.robot)
+1. Save your robot file into the `test` directory
+1. Open a shell, cd to the directory above `test`, and run this command: <br/>
 ```bash
 robot test/your_test_file.robot
 ```
