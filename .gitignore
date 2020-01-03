@@ -6,6 +6,7 @@ __pycache__
 *.html
 *.xml
 *.png
+*.log
 
 ###############################################################################
 # docs/ Ignore everything except .md files
