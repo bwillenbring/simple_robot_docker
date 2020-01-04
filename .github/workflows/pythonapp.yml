@@ -32,10 +32,6 @@ jobs:
       run: |
         python -v
         robot test/simple-variables.robot
-        echo "ls /usr/local/bin..."
-        ls /usr/local/bin/
-        echo "which chromedriver..."
-        which chromedriver
-        echo "PATH..."
-        echo $PATH
+        echo "Building the docker image..."
+        docker-compose build
         echo "DONE!"
