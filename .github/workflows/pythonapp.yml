@@ -1,10 +1,10 @@
-name: Run Simple Robot Test
+name: Run Tests
 
 on: [push]
 
 jobs:
   build:
-    
+
     runs-on: ubuntu-latest
 
     steps:
@@ -29,4 +29,3 @@ jobs:
         python -v
         robot test/simple-variables.robot
         echo "DONE!"
-      
