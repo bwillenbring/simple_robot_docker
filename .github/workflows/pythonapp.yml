@@ -28,5 +28,5 @@ jobs:
       run: |
         python -v
         robot --version
-        ls test
+        robot test/simple-variables.robot
       
