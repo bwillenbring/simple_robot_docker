@@ -1,0 +1,7 @@
+language: python
+
+install:
+    - pip install requirements.txt
+
+script:
+    - robot test/simple-variables.robot
