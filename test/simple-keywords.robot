@@ -33,6 +33,7 @@ Do a google search and click on the top search result
 
 *** Keywords ***
 Begin Test Suite
+    Log To Console    System browser set to ${BROWSER}
     Open Browser    ${BASE_URL}     ${BROWSER}
     Maximize Browser Window
     Set Selenium Timeout    10
