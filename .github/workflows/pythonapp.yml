@@ -32,5 +32,10 @@ jobs:
       run: |
         python -v
         robot test/simple-variables.robot
-        robot test/simple-keywords.robot
+        echo "ls /usr/local/bin..."
+        ls /usr/local/bin/
+        echo "which chromedriver..."
+        which chromedriver
+        echo "PATH..."
+        echo $PATH
         echo "DONE!"
