@@ -1,10 +1,11 @@
 language: python
 
+dist: xenial
+
 install:
     - pip install requirements.txt
 
-script:
-    - robot test/simple-variables.robot
+script: robot test/simple-variables.robot
 
 notifications:
     email:
