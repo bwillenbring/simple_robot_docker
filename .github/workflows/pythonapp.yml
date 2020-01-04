@@ -27,6 +27,6 @@ jobs:
     - name: Run Robot Spec
       run: |
         python -v
-        robot --version
+        robot test/simple-variables.robot
         echo "DONE!"
       
