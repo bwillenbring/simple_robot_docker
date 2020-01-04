@@ -8,6 +8,9 @@ inflection == 0.3.1
 # listeners/CustomListener.py: 1
 robotframework == 3.1.2
 
+# This does not get picked up by pigar 
+robotframework-seleniumlibrary
+
 # libraries/SG.py: 5,6,7,8,9
 # libraries/locators.py: 3
 selenium == 3.141.0
