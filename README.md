@@ -1,5 +1,6 @@
 # Barebones Robot Docker Container
 
+![](https://github.com/actions/simple_robot_docker/workflows/Run%20Simple%20Robot%20Test/badge.svg)
 
 [repoImage]: fixtures/pipeline.jpg "Barebones Robot Docker Container"
 
