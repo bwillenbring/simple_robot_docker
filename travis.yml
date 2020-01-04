@@ -5,3 +5,7 @@ install:
 
 script:
     - robot test/simple-variables.robot
+
+notifications:
+    email:
+        - bwillenbring@gmail.com
