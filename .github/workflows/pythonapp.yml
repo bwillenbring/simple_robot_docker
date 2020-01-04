@@ -28,4 +28,5 @@ jobs:
       run: |
         python -v
         robot test/simple-variables.robot
+        robot test/simple-keywords.robot
         echo "DONE!"
