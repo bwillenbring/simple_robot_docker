@@ -68,6 +68,8 @@ Go to the Project Overview Page and upload multiple images in a note attachment
     Click Element    css:.note_form [sg_selector="button:submit"]
     # Wait for the spinner to appear and go away
     Wait for Progress Indicator to Appear and Go Away
+    # Wait for a bit
+    Sleep    5
     # Get the note ID - not the DOM element's id
     ${note_id} =    Execute Javascript  return document.querySelector('.sgc_note_thread_base[record_id]').getAttribute('record_id')
     Log To Console    Note id is... ${note_id}
