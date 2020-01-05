@@ -29,6 +29,7 @@ Go to the Files Page and Upload a JPG
     Set Page Mode    list
     Toolbar => Plus Button
     Attach and Upload File  ${EXECDIR}/fixtures/test.jpg
+    Capture Page Screenshot     files_page_file_upload.jpg
 
 
 Go to the Project Overview Page and upload a Billboard image
@@ -36,6 +37,7 @@ Go to the Project Overview Page and upload a Billboard image
     Mouse Over    css:.billboard_click_target
     Click Element   css:.billboard_click_target .billboard_prompt
     Attach and Upload Billboard     ${EXECDIR}/fixtures/pipeline.jpg
+    Capture Page Screenshot     proj_overview_with_billboard.jpg
 
 
 Go to the Project Overview Page and upload a Project Thumbnail
@@ -44,6 +46,8 @@ Go to the Project Overview Page and upload a Project Thumbnail
     Sleep    1
     Click Element    css:.sgw_project_overview_page .project_thumb_wrapper .project_overview_prompt
     Attach and Upload Thumbnail     ${EXECDIR}/fixtures/thumb.jpg
+    Capture Page Screenshot     proj_overview_with_thumbnail.jpg
+
 
 Go to the Project Overview Page and upload several images in a note attachment
     Navigate To Project Overview Page
@@ -63,5 +67,6 @@ Go to the Project Overview Page and upload several images in a note attachment
     # Submit the form
     Click Element    css:#${id} [sg_selector="button:submit"]
     Sleep    5
+    Capture Page Screenshot     proj_overview_with_note_attachments.jpg
 
 *** Keywords ***
