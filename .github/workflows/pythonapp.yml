@@ -33,7 +33,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run Robot Specs in Docker Container
       run: |
-        export TEST_PROJECT_ID=$(python testLauncher/create_test_project.py)
+        export TEST_PROJECT_ID=$(python robot/testLauncher/create_test_project.py)
         echo "Created Test Project $TEST_PROJECT_ID"
         printenv
         robot --outputdir robot/reports robot/test/simple-variables.robot
