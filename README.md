@@ -2,7 +2,7 @@
 
 ![](https://github.com/bwillenbring/simple_robot_docker/workflows/Run%20Tests/badge.svg)
 
-[repoImage]: robpt/fixtures/pipeline.jpg "Barebones Robot Docker Container"
+[repoImage]: robot/fixtures/pipeline.jpg "Barebones Robot Docker Container"
 
 ![repoImage]
 
@@ -60,7 +60,8 @@ The last line should show an `exit code of 0`. If not, the test failed :grimacin
 
 ## 3. Create and Run your own Robot tests
 **To see a browser running your own tests, do this:**
-1. If you haven't already done so, cd to the top level directory, and run... <br/><pre><code>pip install requirements.txt</code></pre>
-1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](test/simple-keywords.robot)
-1. Save your robot file into the `test` directory
-1. Open a shell, cd to the directory above `test`, and run this command: <br/><pre><code>robot test/your_test_file.robot</code></pre> <br/>**Optionally** specify an `outputdir` (for reports & screenshots)... <pre><code>robot --outputdir reports test/your_test_file.robot</code></pre><br/>**Optionally** pass in a `listener`...<br/><pre><code>robot --outputdir reports --listener listeners/CustomListener.py test/your_test_file.robot</code></pre>
+1. If you haven't already done so, cd to the top level directory, and run... <br/><pre><code>pip install robot/requirements.txt</code></pre>
+1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](robot/test/simple-keywords.robot)
+1. Save your robot file into the `robot/test` directory
+1. Open a shell, cd to the `robot` directory, then run your file like so...: <br/><pre><code>cd robot
+robot test/your_test_file.robot</code></pre> <br/>**Optionally** specify an `outputdir` (for reports & screenshots)... <pre><code>robot --outputdir reports test/your_test_file.robot</code></pre><br/>**Optionally** pass in a `listener`...<br/><pre><code>robot --outputdir reports --listener listeners/CustomListener.py test/your_test_file.robot</code></pre>
