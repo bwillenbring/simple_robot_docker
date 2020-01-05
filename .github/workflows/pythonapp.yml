@@ -40,8 +40,6 @@ jobs:
       with:
           overwrite: true
           TEST_PROJECT_ID: "$TEMP_ID"
-      run: |
-        echo "TEMP_ID is... $TEMP_ID"
     - name: Run Robot Specs in Docker Container
       run: |
         python -v
