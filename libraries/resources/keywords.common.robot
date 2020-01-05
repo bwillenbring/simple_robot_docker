@@ -37,3 +37,20 @@ Set Page Mode
 Get Current Page Mode
     ${mode} =   Execute Javascript  return SG.globals.page.root_widget.get_child_widgets()[2].get_mode()
     Return From Keyword    ${mode}
+
+
+Wait for Progress Indicator to Appear and Go Away
+    # Wait for progress indicator to appear
+    Wait Until Element Is Visible    css:.progress_bar
+    # Wait for progress indicator to go away
+    Wait Until Element Is Not Visible    css:.progress_bar
+
+
+Wait for Yellow Banner
+    Wait Until Element Is Visible    css:[sg_selector="label:message"]
+
+
+Wait for Yellow Banner to Contain
+    [Arguments]     ${msg}
+    Wait for Yellow Banner
+    Wait Until Element Contains    css:[sg_selector="label:message"]    ${msg}

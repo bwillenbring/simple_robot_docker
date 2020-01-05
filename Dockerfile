@@ -1,8 +1,8 @@
 FROM ppodgorsek/robot-framework@sha256:a83dfadeff9621e82552be002dc67a184d7f73b86ef76b06d306135f40a19ed0 as ROBOT
 
-# FROM ROBOT as GIT
-# Install git (this doesn't work on Alpine Linux)
-# RUN yum install -y git
+# FROM ROBOT as FFMPEG
+# Install ffmpeg
+RUN apk add  --no-cache ffmpeg
 
 # Set workding dir to what's in the existing image
 WORKDIR /opt/robotframework
