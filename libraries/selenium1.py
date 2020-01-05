@@ -8,11 +8,12 @@ class ShotgunSiteTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Set some class properties so you can pass these off to all your test cases 
-        cls.baseUrl = os.environ.get("BASE_URL", "https://bwillenbring1.shotgunstudio.com")
+        # Set some class properties so you can pass these off to all your test cases
+        cls.baseUrl = os.environ.get("BASE_URL", "")
         cls.browser = os.environ.get("BROWSER", "chrome")
         cls.username = os.environ.get("USERNAME", "")
         cls.password = os.environ.get("PASSWORD", "")
+        cls.project_id = os.environ.get("TEST_PROJECT_ID", 66)
         # Create a Shotgun API connection object
         cls.sg = Shotgun(cls.baseUrl, login=cls.username, password=cls.password)
         # Create a web driver
@@ -31,14 +32,13 @@ class ShotgunSiteTest(unittest.TestCase):
 
     def test_go_to_assets_page_and_run_quick_filter(self):
         # Create an asset, using the Shotgun API
-        # TODO: Remove hard-coded project_id
         data = {
             "code": "Robot Test Asset",
             "project": {"type": "Project", "id": 66}
         }
         asset_id = self.sg.create("Asset", data)
         # Create a new page instance
-        page = SG.Page(self.site, project_id=66)
+        page = SG.Page(self.site, project_id=self.project_id)
         page.navigate_to_project_page(entity_type='Asset')
         time.sleep(2)
         page.toggle_page_mode('thumb')
