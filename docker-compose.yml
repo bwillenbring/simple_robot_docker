@@ -19,7 +19,7 @@ services:
       BROWSER: chrome
       USERNAME:
       PASSWORD:
-      TEST_PROJECT_ID: 115
+      TEST_PROJECT_ID: "${TEST_PROJECT_ID}"
       ROBOT_LISTENER: /opt/robotframework/listeners/CustomListener.py
       ROBOT_OUTPUTDIR: /opt/robotframework/reports
       ROBOT_SPECS: /opt/robotframework/test
