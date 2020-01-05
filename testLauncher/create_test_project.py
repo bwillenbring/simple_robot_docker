@@ -5,8 +5,8 @@ import sys
 
 # From env. variables
 SERVER_PATH = os.environ.get("BASE_URL", "")
-LOGIN = os.environ.get("ADMIN_USER", "")
-PASSWORD = os.environ.get("ADMIN_PWD", "")
+LOGIN = os.environ.get("USERNAME", "")
+PASSWORD = os.environ.get("PASSWORD", "")
 #
 # Instantiate a connection object with Shotgun Server
 sg = Shotgun(SERVER_PATH, login=LOGIN, password=PASSWORD)
