@@ -43,6 +43,7 @@ jobs:
     - name: Run Robot Specs in Docker Container
       run: |
         python -v
+        printenv
         robot test/simple-variables.robot
         echo "Building the docker image..."
         docker-compose build
