@@ -18,10 +18,10 @@ services:
       BASE_URL: https://bwillenbring1.shotgunstudio.com
       BROWSER: chrome
       USERNAME:
-      PASSWORD: 
+      PASSWORD:
       TEST_PROJECT_ID: 115
       ROBOT_LISTENER: /opt/robotframework/listeners/CustomListener.py
       ROBOT_OUTPUTDIR: /opt/robotframework/reports
-      ROBOT_SPECS: /opt/robotframework/test/simple-keywords.robot
+      ROBOT_SPECS: /opt/robotframework/test
     command: python testLauncher/testLauncher.py
     # command: ["xvfb-run", "robot", "/opt/robotframework/test/simple.robot"]
