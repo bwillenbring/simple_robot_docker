@@ -20,9 +20,7 @@ if __name__ == "__main__":
     try:
         p = sg.create("Project", {"name": proj_name}, return_fields=["id"])
         id = p["id"]
-        os.environ["TEST_PROJECT_ID"] = str(id)
-        print("Setting TEST_PROJECT_ID to %s" % id)
+        print id
 
     except Exception as E:
-        print "Could not create project %s" % proj_name
-        print(E.args)
+        print os.environ.get("TEST_PROJECT_ID")
