@@ -12,7 +12,7 @@ jobs:
         BROWSER: ${{ secrets.SG_BROWSER }}
         USERNAME: ${{ secrets.SG_USERNAME }}
         PASSWORD: ${{ secrets.SG_PASSWORD }}
-        TEST_PROJECT_ID: 66
+        TEST_PROJECT_ID: 66     # this default will be overridden later
 
     steps:
     - uses: actions/checkout@v1
@@ -24,6 +24,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Create Test Shotgun Project
+      run: |
+        python testLauncher/create_test_project.py
+        echo "Created Test Project $TEST_PROJECT_ID"
     - name: Lint with flake8
       run: |
         pip install flake8
