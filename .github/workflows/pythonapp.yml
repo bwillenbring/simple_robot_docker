@@ -36,7 +36,7 @@ jobs:
         export TEST_PROJECT_ID=$(python testLauncher/create_test_project.py)
         echo "Created Test Project $TEST_PROJECT_ID"
       env:
-          TEST_PROJECT_ID: ${{ TEST_PROJECT_ID }}
+          TEST_PROJECT_ID: ${{ $TEST_PROJECT_ID }}
     - name: Run Robot Specs in Docker Container
       run: |
         python -v
