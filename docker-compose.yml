@@ -3,15 +3,15 @@ services:
   ##################################################################
   robot:
     build:
-      context: .
+      context: ./robot
     shm_size: '2gb'
     volumes:
-      - ./fixtures:/opt/robotframework/fixtures:Z
-      - ./libraries:/opt/robotframework/libraries:Z
-      - ./listeners:/opt/robotframework/listeners:Z
-      - ./reports:/opt/robotframework/reports:Z
-      - ./test:/opt/robotframework/test:Z
-      - ./testLauncher:/opt/robotframework/testLauncher:Z
+      - ./robot/fixtures:/opt/robotframework/fixtures:Z
+      - ./robot/libraries:/opt/robotframework/libraries:Z
+      - ./robot/listeners:/opt/robotframework/listeners:Z
+      - ./robot/reports:/opt/robotframework/reports:Z
+      - ./robot/test:/opt/robotframework/test:Z
+      - ./robot/testLauncher:/opt/robotframework/testLauncher:Z
 
     environment:
       # All env vars documented in README.md
@@ -24,4 +24,3 @@ services:
       ROBOT_OUTPUTDIR: /opt/robotframework/reports
       ROBOT_SPECS: /opt/robotframework/test
     command: python testLauncher/testLauncher.py
-    # command: ["xvfb-run", "robot", "/opt/robotframework/test/simple.robot"]

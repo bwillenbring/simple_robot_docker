@@ -2,15 +2,15 @@
 
 ![](https://github.com/bwillenbring/simple_robot_docker/workflows/Run%20Tests/badge.svg)
 
-[repoImage]: fixtures/pipeline.jpg "Barebones Robot Docker Container"
+[repoImage]: robpt/fixtures/pipeline.jpg "Barebones Robot Docker Container"
 
 ![repoImage]
 
 **Includes the following:**
-- [Sample Robot specs in the `test` directory](test/)
-- [Sample Robot Listener in the `listeners` directory](listeners/CustomListener.py) - with empty method calls that hook into start and end events
-- [Sample test launch script in `testLauncher`](testLauncher/testLauncher.py)
-- [`requirements.txt`](requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
+- [Sample Robot specs in the `test` directory](robot/test/)
+- [Sample Robot Listener in the `listeners` directory](robot/listeners/CustomListener.py) - with empty method calls that hook into start and end events
+- [Sample test launch script in `testLauncher`](robot/testLauncher/testLauncher.py)
+- [`requirements.txt`](robot/requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
 
 **Assumes the following:**
 - You have git, and can clone a repo
@@ -29,10 +29,10 @@ git clone https://github.com/bwillenbring/simple_robot_docker.git
 ## 2. Build and up the container
 `cd` into the directory that contains `docker-compose.yml`, then do this...
 ```
-docker-compose up --build
+docker-compose up --build robot
 ```
 
-Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](test/simple-keywords.robot).
+Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](robot/test/simple-keywords.robot).
 
 ### You'll see this kind of output...
 ```
