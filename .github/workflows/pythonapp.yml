@@ -25,7 +25,7 @@ jobs:
     - name: Copy any screenshots into the videos folder
       run: |
       mkdir cypress/videos/screenshots
-      cp cypress/screenshots/* cypress/videos/screenshots
+      cp -r cypress/screenshots/ cypress/videos/screenshots
     - name: Publish Cypress assets to S3
       uses: jakejarvis/s3-sync-action@master
       with:
