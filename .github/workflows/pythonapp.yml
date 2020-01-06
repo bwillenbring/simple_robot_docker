@@ -11,6 +11,7 @@ jobs:
         BROWSER: ${{ secrets.SG_BROWSER }}
         USERNAME: ${{ secrets.SG_USERNAME }}
         PASSWORD: ${{ secrets.SG_PASSWORD }}
+        TEST_PROJECT_ID: 66
 
     steps:
     - uses: actions/checkout@v1
