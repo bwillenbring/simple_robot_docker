@@ -5,6 +5,7 @@ FROM cypress/base:12.6.0 as base
 From base as install_cypress
 # Set workding dir to what's in the existing image
 WORKDIR /
+RUN mkdir /mnt/cypress
 # Install Cypress and all the things it will use
 RUN npm install --save-dev cypress@3.6.0
 RUN npm install --save-dev cypress-plugin-retries
