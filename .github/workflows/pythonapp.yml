@@ -19,6 +19,12 @@ jobs:
       run: |
         docker-compose build cypress
     - name: Up the Cypress Container
+      env:
+          BASE_URL: ${{ secrets.SG_BASE_URL }}
+          BROWSER: ${{ secrets.SG_BROWSER }}
+          USERNAME: ${{ secrets.SG_USERNAME }}
+          PASSWORD: ${{ secrets.SG_PASSWORD }}
+          TEST_PROJECT_ID: 66
       run: |
         docker-compose up cypress
     - name: Move Cypress assets to mochawesome-report dir
