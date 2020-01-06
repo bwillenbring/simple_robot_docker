@@ -3,16 +3,33 @@ name: Run Tests
 on: [push]
 
 jobs:
-  build:
-
+  cypress:
+    name: Cypress
     runs-on: ubuntu-latest
-
     env:
         BASE_URL: ${{ secrets.SG_BASE_URL }}
         BROWSER: ${{ secrets.SG_BROWSER }}
         USERNAME: ${{ secrets.SG_USERNAME }}
         PASSWORD: ${{ secrets.SG_PASSWORD }}
-        # TEST_PROJECT_ID: 66     # this default will be overridden later
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 2.7
+    - name: Build Cypress Docker Container
+      run: |
+        docker-compose up --build cypress
+
+  build:
+    name: Robot & Selenium Stage
+    runs-on: ubuntu-latest
+    env:
+        BASE_URL: ${{ secrets.SG_BASE_URL }}
+        BROWSER: ${{ secrets.SG_BROWSER }}
+        USERNAME: ${{ secrets.SG_USERNAME }}
+        PASSWORD: ${{ secrets.SG_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v1
@@ -49,4 +66,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
-        SOURCE_DIR: 'robot/reports'      # optional: defaults to entire repository
+        SOURCE_DIR: 'robot/reports'
