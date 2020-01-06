@@ -31,4 +31,5 @@ services:
     volumes:
         - ./:/mnt
     # Run the cypress command
-    command: ["cypress", "run", "-s", "integration/*.js"]
+    # command: ["cypress", "run", "-s", "integration/*.js"]
+    command: ["node", "run.js"]
