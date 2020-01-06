@@ -29,7 +29,29 @@ services:
     build:
       context: ./cypress
     volumes:
-        - ./:/mnt
+        - ./cypress:/mnt/cypress
     # Run the cypress command
-    # command: ["cypress", "run", "-s", "integration/*.js"]
-    command: ["node", "run.js"]
+    command: bash -c "
+        echo --------------------
+        && echo Cypress Modules...
+        && npm ls|grep 'cypress'
+        && printf '\n'
+        && echo Mocha modules...
+        && npm ls|grep 'mocha'
+        && echo --------------------
+        && echo Node Version...
+        && node -v
+        && printf '\n'
+        && echo 'npm version...'
+        && npm -v
+        && echo --------------------
+        && echo Environment variables...
+        && printenv
+        && echo --------------------
+        && echo Contents of /mnt/cypress...
+        && ls /mnt/cypress
+        && echo --------------------
+        && echo Running run.js...
+        && printf '\n'
+        && node run.js
+        "
