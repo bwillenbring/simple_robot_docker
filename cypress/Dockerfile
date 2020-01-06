@@ -12,7 +12,7 @@ FROM cypress/base:12.6.0 as base
 
 From base as set_cypress_path
 # Set path
-ENV PATH=$PATH:/node_modules/cypress/bin
+# ENV PATH=$PATH:/node_modules/cypress/bin
 # Set workdir
 WORKDIR /mnt/cypress
 
