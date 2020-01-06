@@ -15,10 +15,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Build and run Cypress Docker Container
+    - name: Build the Cypress Docker Container
       run: |
         docker-compose build --no-cache cypress
+    - name: Up the Cypress Container
         docker-compose up cypress
+    - name: Move Cypress assets to mochawesome-report dir
         cp -r cypress/videos cypress/mochawesome-report
     - name: Publish Cypress assets to S3
       uses: jakejarvis/s3-sync-action@master
