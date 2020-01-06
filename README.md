@@ -1,4 +1,4 @@
-# Barebones Robot Docker Container
+# Cypress & Robot Docker Container
 
 ![](https://github.com/bwillenbring/simple_robot_docker/workflows/Run%20Tests/badge.svg)
 
@@ -7,10 +7,21 @@
 ![repoImage]
 
 **Includes the following:**
-- [Sample Robot specs in the `test` directory](robot/test/)
-- [Sample Robot Listener in the `listeners` directory](robot/listeners/CustomListener.py) - with empty method calls that hook into start and end events
-- [Sample test launch script in `testLauncher`](robot/testLauncher/testLauncher.py)
-- [`requirements.txt`](robot/requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
+- **Github Actions Workflow**
+  - [Runs Robot and Cypress tests in parallel](.github/workflows/pythonapp.yml)
+  - [Sends the Cypress mochawesome html report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/cypress/mochawesome.html)
+  - [Sends the robot report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/robot/report.html)
+
+
+- **Cypress**
+  - [Runs a few simple cypress specs](cypress/integration/)
+
+
+- **Robot**
+  - [Runs a few simple Robot specs](robot/test/)
+  - [Includes a sample Robot Listener in the `listeners` directory](robot/listeners/CustomListener.py) - with empty method calls that hook into start and end events
+  - [Includes a sample test launch script in the `testLauncher` directory](robot/testLauncher/testLauncher.py)
+  - [`requirements.txt`](robot/requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
 
 **Assumes the following:**
 - You have git, and can clone a repo
