@@ -33,11 +33,9 @@ services:
     # Run the cypress command
     command: bash -c "
         echo --------------------
-        && echo Cypress Modules...
-        && npm ls|grep 'cypress'
+        && echo npm modules...
         && printf '\n'
-        && echo Mocha modules...
-        && npm ls|grep 'mocha'
+        && npm ls
         && echo --------------------
         && echo Node Version...
         && node -v
