@@ -24,6 +24,7 @@ with open('/mnt/cypress/cypress.json', 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4)
     outfile.close()
 
+# do not call this: run.js now executes the cypress call
 # Create your cypress command (which runs all specs in the configured dir)
-cmd = "cypress run"
-os.system(cmd)
+# cmd = "cypress run"
+# os.system(cmd)
