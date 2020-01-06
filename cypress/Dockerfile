@@ -4,7 +4,7 @@ FROM cypress/base:12.6.0 as base
 
 # From base as install_cypress
 # Install Cypress and all the things it will use
-# RUN npm install --save-dev cypress
+RUN npm install --save-dev cypress@3.6.0
 # RUN npm install --save-dev cypress-plugin-retries
 # RUN npm install --save-dev mocha@5.2.0 mochawesome mochawesome-merge mochawesome-report-generator
 
@@ -12,7 +12,7 @@ FROM cypress/base:12.6.0 as base
 
 From base as set_cypress_path
 # Set path
-# ENV PATH=$PATH:/node_modules/cypress/bin
+ENV PATH=$PATH:/node_modules/cypress/bin
 # Set workdir
 WORKDIR /mnt/cypress
 
