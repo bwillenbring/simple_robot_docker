@@ -15,14 +15,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v1
-      with:
-        python-version: 2.7
     - name: Build and run Cypress Docker Container
       run: |
-        docker-compose build --no-cache cypress
-        docker-compose up cypress
+        cd cypress && docker build .
+        cd ../ && docker-compose up cypress
         mv cypress/videos/*.mp4 cypress/mochawesome-report
     - name: Publish Cypress assets to S3
       uses: jakejarvis/s3-sync-action@master

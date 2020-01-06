@@ -5,7 +5,7 @@ FROM cypress/base:12.6.0 as base
 From base as install_cypress
 # Set workdir
 RUN mkdir /mnt/cypress
-# COPY ./package.json ./package-lock.json /mnt/cypress/
+COPY ./package.json ./package-lock.json /mnt/cypress/
 WORKDIR /mnt/cypress
 # Install Cypress and all the things it will use
 RUN npm install --save-dev cypress@3.6.0
