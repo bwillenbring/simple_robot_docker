@@ -31,7 +31,13 @@ services:
       context: ./cypress
     volumes:
         - ./cypress:/mnt/cypress
-    # Run the cypress command
+
+    environment:
+        BASE_URL: "${BASE_URL}"
+        BROWSER: "${BROWSER}"
+        USERNAME: "${USERNAME}"
+        PASSWORD: "${PASSWORD}"
+        TEST_PROJECT_ID: "${TEST_PROJECT_ID}"
     command: bash -c "
         npm ci
         && echo --------------------
