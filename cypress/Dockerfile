@@ -19,7 +19,8 @@ WORKDIR /mnt/cypress
 # --------------------------------------------------
 
 # Run the command...
-COPY ./package.json /mnt/cypress
-# RUN npm ci --production
-RUN npm install
-CMD ["cypress", "run", "-s", "integration/*.js"]
+COPY ./package.json ./package-lock.json /mnt/cypress/
+RUN npm ci
+# RUN npm install
+# CMD ["cypress", "run", "-s", "integration/*.js"]
+CMD ["$(npm bin)/cypress", "-v"]
