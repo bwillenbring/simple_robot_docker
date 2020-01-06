@@ -8,7 +8,7 @@ RUN mkdir /mnt/cypress
 COPY ./package.json ./package-lock.json /mnt/cypress/
 WORKDIR /mnt/cypress
 # Install Cypress and all the things it will use
-npm ci --production
+RUN npm ci --production
 # RUN npm install --save-dev cypress@3.6.0
 # RUN npm install --save-dev cypress-plugin-retries
 # RUN npm install --save-dev mocha@5.2.0 mochawesome mochawesome-merge mochawesome-report-generator
