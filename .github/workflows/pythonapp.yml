@@ -19,17 +19,11 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 2.7
-    - name: Build Cypress Docker Container
+    - name: Build and run Cypress Docker Container
       run: |
         docker-compose build --no-cache cypress
         docker-compose up cypress
-    - name: Consolidate image, video, and report artifacts
-      run: |
-        # Nest screenshots into videos
-        mkdir cypress/videos/screenshots
-        cp -r cypress/screenshots/ cypress/videos/screenshots/
-        # Copy mochawesome-report into cypress/videos
-        cp -r cypress/mochawesome-report cypress/videos
+        mv cypress/videos/*.mp4 cypress/mochawesome-report
     - name: Publish Cypress assets to S3
       uses: jakejarvis/s3-sync-action@master
       with:
@@ -39,7 +33,7 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
-        SOURCE_DIR: 'cypress/videos'
+        SOURCE_DIR: 'cypress/mochawesome-report'
         DEST_DIR: 'cypress'
 
   robot:
