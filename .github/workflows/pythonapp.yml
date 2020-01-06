@@ -3,16 +3,47 @@ name: Run Tests
 on: [push]
 
 jobs:
-  build:
-
+  cypress:
+    name: Cypress
     runs-on: ubuntu-latest
-
     env:
         BASE_URL: ${{ secrets.SG_BASE_URL }}
         BROWSER: ${{ secrets.SG_BROWSER }}
         USERNAME: ${{ secrets.SG_USERNAME }}
         PASSWORD: ${{ secrets.SG_PASSWORD }}
-        # TEST_PROJECT_ID: 66     # this default will be overridden later
+        TEST_PROJECT_ID: 66
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Cypress Docker Container
+      run: |
+        docker-compose build cypress
+    - name: Up the Cypress Container
+      run: |
+        docker-compose up cypress
+    - name: Move Cypress assets to mochawesome-report dir
+      run: |
+        cp -r cypress/videos cypress/mochawesome-report
+    - name: Publish Cypress assets to S3
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        SOURCE_DIR: 'cypress/mochawesome-report'
+        DEST_DIR: 'cypress'
+
+  robot:
+    name: Robot & Selenium Stage
+    runs-on: ubuntu-latest
+    env:
+        BASE_URL: ${{ secrets.SG_BASE_URL }}
+        BROWSER: ${{ secrets.SG_BROWSER }}
+        USERNAME: ${{ secrets.SG_USERNAME }}
+        PASSWORD: ${{ secrets.SG_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v1
@@ -23,7 +54,7 @@ jobs:
     - name: Install python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r robot/requirements.txt
     - name: Lint with flake8
       run: |
         pip install flake8
@@ -33,14 +64,12 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run Robot Specs in Docker Container
       run: |
-        python -v
-        export TEST_PROJECT_ID=$(python testLauncher/create_test_project.py)
+        export TEST_PROJECT_ID=$(python robot/testLauncher/create_test_project.py)
         echo "Created Test Project $TEST_PROJECT_ID"
         printenv
-        robot test/simple-variables.robot
+        robot --outputdir robot/reports robot/test/simple-variables.robot
         echo "Building the docker image..."
-        docker-compose build
-        docker-compose up robot
+        docker-compose up --build robot
         echo "DONE!"
     - name: Publish assets to S3
       uses: jakejarvis/s3-sync-action@master
@@ -51,4 +80,5 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
-        SOURCE_DIR: 'reports'      # optional: defaults to entire repository
+        SOURCE_DIR: 'robot/reports'
+        DEST_DIR: 'robot'

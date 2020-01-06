@@ -3,25 +3,45 @@ services:
   ##################################################################
   robot:
     build:
-      context: .
+      context: ./robot
     shm_size: '2gb'
     volumes:
-      - ./fixtures:/opt/robotframework/fixtures:Z
-      - ./libraries:/opt/robotframework/libraries:Z
-      - ./listeners:/opt/robotframework/listeners:Z
-      - ./reports:/opt/robotframework/reports:Z
-      - ./test:/opt/robotframework/test:Z
-      - ./testLauncher:/opt/robotframework/testLauncher:Z
+      - ./robot/fixtures:/opt/robotframework/fixtures:Z
+      - ./robot/libraries:/opt/robotframework/libraries:Z
+      - ./robot/listeners:/opt/robotframework/listeners:Z
+      - ./robot/reports:/opt/robotframework/reports:Z
+      - ./robot/test:/opt/robotframework/test:Z
+      - ./robot/testLauncher:/opt/robotframework/testLauncher:Z
 
     environment:
-      # All env vars documented in README.md
-      BASE_URL: https://bwillenbring1.shotgunstudio.com
-      BROWSER: chrome
-      USERNAME:
-      PASSWORD:
+      # These 5 env vars are set by the CI build server
+      # If running locally, set them manually
+      BASE_URL: "${BASE_URL}"
+      BROWSER: "${BROWSER}"
+      USERNAME: "${USERNAME}"
+      PASSWORD: "${PASSWORD}"
       TEST_PROJECT_ID: "${TEST_PROJECT_ID}"
       ROBOT_LISTENER: /opt/robotframework/listeners/CustomListener.py
       ROBOT_OUTPUTDIR: /opt/robotframework/reports
       ROBOT_SPECS: /opt/robotframework/test
     command: python testLauncher/testLauncher.py
-    # command: ["xvfb-run", "robot", "/opt/robotframework/test/simple.robot"]
+  ##################################################################
+  cypress:
+    build:
+      context: ./cypress
+    volumes:
+        - ./cypress:/mnt/cypress
+    # Run the cypress command
+    command: bash -c "
+        npm ci
+        && echo --------------------
+        && echo Environment variables...
+        && printenv
+        && echo --------------------
+        && echo Contents of /mnt/cypress...
+        && ls /mnt/cypress
+        && echo --------------------
+        && echo Running run.js...
+        && printf '\n'
+        && node run.js
+        "

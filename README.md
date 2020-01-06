@@ -1,16 +1,27 @@
-# Barebones Robot Docker Container
+# Cypress & Robot Docker Container
 
 ![](https://github.com/bwillenbring/simple_robot_docker/workflows/Run%20Tests/badge.svg)
 
-[repoImage]: fixtures/pipeline.jpg "Barebones Robot Docker Container"
+[repoImage]: robot/fixtures/pipeline.jpg "Barebones Robot Docker Container"
 
 ![repoImage]
 
 **Includes the following:**
-- [Sample Robot specs in the `test` directory](test/)
-- [Sample Robot Listener in the `listeners` directory](listeners/CustomListener.py) - with empty method calls that hook into start and end events
-- [Sample test launch script in `testLauncher`](testLauncher/testLauncher.py)
-- [`requirements.txt`](requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
+- **Github Actions Workflow**
+  - [Runs Robot and Cypress tests in parallel](.github/workflows/pythonapp.yml)
+  - [Sends the Cypress mochawesome html report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/cypress/mochawesome.html)
+  - [Sends the robot report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/robot/report.html)
+
+
+- **Cypress**
+  - [Runs a few simple cypress specs](cypress/integration/)
+
+
+- **Robot**
+  - [Runs a few simple Robot specs](robot/test/)
+  - [Includes a sample Robot Listener in the `listeners` directory](robot/listeners/CustomListener.py) - with empty method calls that hook into start and end events
+  - [Includes a sample test launch script in the `testLauncher` directory](robot/testLauncher/testLauncher.py)
+  - [`requirements.txt`](robot/requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
 
 **Assumes the following:**
 - You have git, and can clone a repo
@@ -29,10 +40,10 @@ git clone https://github.com/bwillenbring/simple_robot_docker.git
 ## 2. Build and up the container
 `cd` into the directory that contains `docker-compose.yml`, then do this...
 ```
-docker-compose up --build
+docker-compose up --build robot
 ```
 
-Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](test/simple-keywords.robot).
+Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](robot/test/simple-keywords.robot).
 
 ### You'll see this kind of output...
 ```
@@ -60,7 +71,8 @@ The last line should show an `exit code of 0`. If not, the test failed :grimacin
 
 ## 3. Create and Run your own Robot tests
 **To see a browser running your own tests, do this:**
-1. If you haven't already done so, cd to the top level directory, and run... <br/><pre><code>pip install requirements.txt</code></pre>
-1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](test/simple-keywords.robot)
-1. Save your robot file into the `test` directory
-1. Open a shell, cd to the directory above `test`, and run this command: <br/><pre><code>robot test/your_test_file.robot</code></pre> <br/>**Optionally** specify an `outputdir` (for reports & screenshots)... <pre><code>robot --outputdir reports test/your_test_file.robot</code></pre><br/>**Optionally** pass in a `listener`...<br/><pre><code>robot --outputdir reports --listener listeners/CustomListener.py test/your_test_file.robot</code></pre>
+1. If you haven't already done so, cd to the top level directory, and run... <br/><pre><code>pip install robot/requirements.txt</code></pre>
+1. Create a new valid Robot test file - [here's a very simple test snippet to get you started](robot/test/simple-keywords.robot)
+1. Save your robot file into the `robot/test` directory
+1. Open a shell, cd to the `robot` directory, then run your file like so...: <br/><pre><code>cd robot
+robot test/your_test_file.robot</code></pre> <br/>**Optionally** specify an `outputdir` (for reports & screenshots)... <pre><code>robot --outputdir reports test/your_test_file.robot</code></pre><br/>**Optionally** pass in a `listener`...<br/><pre><code>robot --outputdir reports --listener listeners/CustomListener.py test/your_test_file.robot</code></pre>
