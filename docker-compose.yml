@@ -32,6 +32,7 @@ services:
         - ./cypress:/mnt/cypress
     # Run the cypress command
     command: bash -c "
+        npm ci
         echo --------------------
         && echo npm modules...
         && printf '\n'
