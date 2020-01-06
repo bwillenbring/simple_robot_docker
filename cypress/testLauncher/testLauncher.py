@@ -13,14 +13,15 @@ configs_to_overwrite = {
 }
 
 # open your existing cypress config
-with open('/mnt/cypress/cypress.json') as json_file:
+# this is NOT done from within the container
+with open('/cypress/cypress.json') as json_file:
     data = json.load(json_file)
     for c in configs_to_overwrite:
         data[c] = configs_to_overwrite[c]
     json_file.close()
 
 # Now write your new json file...
-with open('/mnt/cypress/cypress.json', 'w') as outfile:
+with open('/cypress/cypress.json', 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4)
     outfile.close()
 
