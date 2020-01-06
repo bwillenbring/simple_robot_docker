@@ -21,4 +21,5 @@ ENV PATH=$PATH:/node_modules/cypress/bin
 # --------------------------------------------------
 
 # Run the command...
-CMD ["cypress", "run", "-s", "integration/*.js"]
+# CMD ["cypress", "run", "-s", "integration/*.js"]
+# CMD ["echo", "Dockerfile done"]

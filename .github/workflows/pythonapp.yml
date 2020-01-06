@@ -17,8 +17,9 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build and run Cypress Docker Container
       run: |
-        docker-compose up --build cypress
-        mv cypress/videos/*.mp4 cypress/mochawesome-report
+        docker-compose build --no-cache cypress
+        docker-compose up cypress
+        cp -r cypress/videos cypress/mochawesome-report
     - name: Publish Cypress assets to S3
       uses: jakejarvis/s3-sync-action@master
       with:
