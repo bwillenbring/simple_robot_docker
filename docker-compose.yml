@@ -24,3 +24,11 @@ services:
       ROBOT_OUTPUTDIR: /opt/robotframework/reports
       ROBOT_SPECS: /opt/robotframework/test
     command: python testLauncher/testLauncher.py
+  ###
+  cypress:
+    build:
+      context: ./cypress
+    volumes:
+        - ./:/mnt
+    # Run the cypress command
+    command: ["cypress", "run", "-s", "integration/*.js"]
