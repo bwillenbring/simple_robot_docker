@@ -21,7 +21,8 @@ jobs:
         python-version: 2.7
     - name: Build Cypress Docker Container
       run: |
-        docker-compose up --build cypress
+        docker-compose build --no-cache cypress
+        docker-compose up cypress
     - name: Consolidate image, video, and report artifacts
       run: |
         # Nest screenshots into videos
