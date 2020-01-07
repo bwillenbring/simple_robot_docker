@@ -4,26 +4,16 @@ on: [push]
 
 jobs:
 
-  one:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v1
-      run: |
-        touch job_one.txt
-
   build:
 
     runs-on: ubuntu-latest
-    needs: one
     steps:
     - uses: actions/checkout@v1
     - name: ls txt files
       run: |
         ls *.txt
 
-    - name: echo job vars
+    - name: echo github vars
       run: |
         echo github.event
         echo github.repository
