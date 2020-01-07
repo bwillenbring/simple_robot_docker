@@ -76,9 +76,9 @@ Cypress.Commands.add('get_page', function() {
  */
 Cypress.Commands.add('get_grid', function() {
     // First, get the page...
-    cy.get_page().then($page => {
-        let ng = $page.get_child_widgets()[0];
-        if ($page.get_entity_type() === 'Task' || $page.get_mode() === 'sched') {
+    cy.get_page().then(page => {
+        let ng = page.get_child_widgets()[0];
+        if (page.get_entity_type() === 'Task' || page.get_mode() === 'sched') {
             ng = ng.grid_widget;
         }
         return ng;
@@ -94,13 +94,13 @@ Cypress.Commands.add('get_grid', function() {
  * cy.save_page();
  *
  */
-Cypress.Commands.add('save_page', () => {
+export function save_page() {
     cy.get('[sg_selector="button:page_menu"]').should('have.class', 'dirty');
     cy.get('[sg_selector="button:page_menu"]').click();
     cy.handle_menu_item('Save Page');
     cy.wait_for_spinner();
     cy.get('[sg_selector="button:page_menu"]').should('not.have.class', 'dirty');
-});
+}
 
 /**
  * @function get_page_id_by_name
@@ -131,12 +131,12 @@ Cypress.Commands.add('save_page', () => {
  * })
  *
  */
-Cypress.Commands.add('get_page_id_by_name', function(page_name) {
-    let url = `/api/v1/entity/pages?fields=name,page_type&sort=name&filter[name]=${page_name}`;
-    cy.get_rest_endpoint(url, 'GET').then($resp => {
+export get_page_id_by_name(page_name) {
+    const url = `/api/v1/entity/pages?fields=name,page_type&sort=name&filter[name]=${page_name}`;
+    cy.get_rest_endpoint({url: url}).then($resp => {
         return $resp.body.data[0].id;
     });
-});
+}
 
 
 /**
@@ -917,7 +917,7 @@ export function display_fields_in_grid(field_array=[]) {
  * // moves status to last spot
  * cy.move_column('sg_status_list', 'last')
  */
-Cypress.Commands.add('move_column', function(col_name, new_index) {
+export function move_column(col_name, new_index) {
     // Get grid
     cy.get_grid().then(ng => {
         // Get position of the column given
@@ -936,7 +936,7 @@ Cypress.Commands.add('move_column', function(col_name, new_index) {
         }
     });
     cy.wait_for_spinner();
-});
+}
 
 /**
  * @function remove_all_step_columns
@@ -950,14 +950,14 @@ Cypress.Commands.add('move_column', function(col_name, new_index) {
  * cy.remove_all_step_columns();
  *
  */
-Cypress.Commands.add('remove_all_step_columns', function() {
+export function remove_all_step_columns() {
     // Get the grid
     cy.get_grid().then(ng => {
         if (ng.summaries_visible()) {
             ng.hide_all_task_pivot_columns();
         }
     });
-});
+}
 
 /**
  * @function step_column_menu_action
@@ -977,12 +977,12 @@ Cypress.Commands.add('remove_all_step_columns', function() {
  * cy.step_column_menu_action('step_0', 'Show Details Only')
  *
  */
-Cypress.Commands.add('step_column_menu_action', function(step, menu_action) {
+export function step_column_menu_action(step, menu_action) {
     // First, get the grid
     cy.right_click_on('div.pivot_headers[field="' + step + '"]').then(() => {
         cy.handle_menu_item(menu_action);
     });
-});
+}
 
 // Uses the Manage Columns dialog to allow for checkbox selection of fields
 // Much slower because of the size of the dom tree that has to be traversed
@@ -1040,7 +1040,7 @@ Cypress.Commands.add('display_fields_in_grid_with_dialog', field_array => {
  * cy.refresh_grid();
  *
  */
-Cypress.Commands.add('refresh_grid', function(reload_schema = false) {
+export function refresh_grid(reload_schema = false) {
     cy.wait_for_spinner().then(() => {
         cy.get_SG().then(SG => {
             if (reload_schema == true) {
@@ -1055,7 +1055,7 @@ Cypress.Commands.add('refresh_grid', function(reload_schema = false) {
             }
         });
     });
-});
+}
 
 /* --------------------------------------------------
 cy.edit_field_in_grid('code', {record_id: 45, new_value:'Tommy'})
@@ -1111,34 +1111,46 @@ cy.edit_field_in_grid('code', {record_id: 45, new_value:'Tommy'})
  * });
  *
  */
-Cypress.Commands.add('edit_field_in_grid', field => {
+export function edit_field_in_grid({
+    entity_id = null,
+    system_field_name ='',
+    autocomplete = false
+}) {
     // Get the selector to bring the field into edit mode
     let sel = `td.sg_cell[record_id="${field.id}"][field="${field.system_field_name}"] [sg_selector="button:edit_trigger"]`;
     // First, bring the field into edit mode
     cy.get(sel).click({ force: true });
     // Wait for entity editor
     cy.window().its('SG.globals.active_editor').should('exist');
-    cy.get('div.entity_editor:last textarea,div.entity_editor:last input').type(field.new_value);
-    if (field.autocomplete) {
-        cy.get('.sg_menu_body match:first').click();
-        cy.window().its('SG.globals.active_editor').invoke('blur');
-    } else {
-        cy.window().its('SG.globals.active_editor').invoke('blur');
-    }
-});
+    // Type the input directly into the editor
+    cy
+        .get('div.entity_editor:last textarea,div.entity_editor:last input')
+        .type(field.new_value).then(() => {
+            // Determing...
+            if (autocomplete) {
+                // Click the first autocomplete match
+                cy.get('.sg_menu_body match:first').click();
+                cy.window().its('SG.globals.active_editor').invoke('blur');
+            } else {
+                // Blur the editor an be done with it
+                cy.window().its('SG.globals.active_editor').invoke('blur');
+            }
+        })
+}
 
 // Simply confirms that the yellow banner for creates, edits, and deletes is presnt
-Cypress.Commands.add('confirm_yellow_banner', function() {
+export function confirm_yellow_banner() {
     cy.get('div.sgc_message_box[sg_id="MssgBx"]:visible').should('exist');
     return cy.get('div.sgc_message_box[sg_id="MssgBx"]:visible');
-});
+}
 
-Cypress.Commands.add('exit_edit_mode', () => {
-    //Hit double escape to get rid of any hanging editors
+
+export function exit_edit_mode() {
+    // Hit double escape to get rid of any hanging editors
     if (Cypress.$('div.entity_editor').length > 0) {
         cy.get('div.entity_editor textarea,div.entity_editor input').type('{esc}{esc}');
     }
-});
+}
 
 /**
  * @function run_quick_filter
@@ -1152,18 +1164,14 @@ Cypress.Commands.add('exit_edit_mode', () => {
  * cy.run_quick_filter('_');
  *
  */
-Cypress.Commands.add('run_quick_filter', txt => {
-    txt += '{enter}';
+export function run_quick_filter(txt) {
+    // Type the text + an enter key
     cy
         .get('input[sg_selector="input:quick_filter"]:last')
-        .type(txt)
-        .then(() => {
-            cy.wait_for_spinner();
-        })
-        .then(() => {
-            cy.wait_for_grid();
-        });
-});
+        .type(`${txt}{enter}`);
+    cy.wait_for_spinner();
+    cy.wait_for_grid();
+}
 
 Cypress.Commands.add('get_unique_field_name', (entity_type, field_name) => {
     let system_name = 'sg_' + snake(field_name);

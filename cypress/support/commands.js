@@ -40,6 +40,16 @@ Cypress.Commands.add('wait_for_page_to_load', page.wait_for_page_to_load);
 Cypress.Commands.add('wait_for_spinner', page.wait_for_spinner);
 Cypress.Commands.add('global_nav', page.global_nav);
 Cypress.Commands.add('display_fields_in_grid', page.display_fields_in_grid);
+Cypress.Commands.add('move_column', page.move_column);
+Cypress.Commands.add('remove_all_step_columns', page.remove_all_step_columns);
+Cypress.Commands.add('step_column_menu_action', page.step_column_menu_action);
+Cypress.Commands.add('refresh_grid', page.refresh_grid);
+Cypress.Commands.add('edit_field_in_grid', page.edit_field_in_grid);
+Cypress.Commands.add('confirm_yellow_banner', page.confirm_yellow_banner);
+Cypress.Commands.add('exit_edit_mode', page.exit_edit_mode);
+Cypress.Commands.add('run_quick_filter', page.run_quick_filter);
+Cypress.Commands.add('save_page', page.save_page);
+Cypress.Commands.add('get_page_id_by_name', page.get_page_id_by_name);
 
 // utils
 import * as utils from './utils'
