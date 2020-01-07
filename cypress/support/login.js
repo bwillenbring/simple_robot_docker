@@ -96,3 +96,108 @@
              }
          });
  }
+
+
+ /**
+  * @function login_as(role='admin')
+  *
+  * @description Logs in to the web app by posting a request to `/user/login`. In most cases, one should use {@link login_admin cy.login_admin()}.
+  * <ul>
+  * <li>Regardless of passed-in value of `role`, this command <u>always uses the configured admin username and password</u></li>
+  * <li>Will create a web session token that is distinct from the REST API token, and has different expiry characteristics</li>
+  * </ul>
+  *
+  * @author Ben Willenbring <benjamin.willenbring@autodesk.com>
+  *
+  * @param {String} role=admin - The role.
+  *
+  * @example
+  * // Login as the admin
+  * cy.login_as('admin');
+  * // Then navigate somewhere
+  * cy.navigate_to_project_page('Shot');
+  *
+  */
+ Cypress.Commands.add('login_as', role => {
+     cy
+         .request({
+             method: 'POST',
+             url: '/user/login',
+             form: true,
+             followRedirect: true, // turn on/off following redirects
+             body: {
+                 'user[login]': Cypress.config('admin_login'),
+                 'user[password]': Cypress.config('admin_pwd'),
+                 ignore_browser_check: 1,
+             },
+         })
+         .then(resp => {
+             //Go home
+             let csrf_name = 'csrf_token_u' + Cypress.config('admin_id');
+             cy.getCookies().then(cookies => {
+                 for (const idx in cookies) {
+                     if (cookies[idx].name.startsWith('csrf_token_u')) {
+                         console.log('Cookie value of ' + csrf_name + '=' + cookies[idx].value);
+                         Cypress.config(csrf_name, cookies[idx].value);
+                         return;
+                     }
+                 }
+                 throw new Error('Could not find a csrf token value!');
+             });
+             cy.getCookie('_session_id').then(cookie => {
+                 // console.log('_session_id Cookie value of ' + cookie.value);
+                 Cypress.config('_session_id', cookie.value);
+             });
+         });
+ });
+
+ Cypress.Commands.add('ui_login_as', role => {
+     cy.visit('/user/login');
+     switch (role) {
+         case 'admin':
+         default:
+             cy.get('#user_login').type(Cypress.config('admin_login'));
+             cy.get('#user_password').type(Cypress.config('admin_pwd'));
+             break;
+     }
+     //Submit
+     cy.get('form.sg_reset_form').submit().then(() => {
+         //Get the schema
+     });
+     cy.url().should('not.contains', '/user/login', "You're no longer on the login page.");
+ });
+
+ // This ensures that your session and cookies are destroyed
+ // It should be invoked prior to the running of each test case
+ Cypress.Commands.add('logout', function() {
+     cy.request('/user/logout').then($resp => {
+         assert.isTrue($resp.status == 200, 'Logout good!');
+     });
+ });
+
+ // dismiss the term of use
+ Cypress.Commands.add('ToU_agreement', (user, password) => {
+     // / Get the current url
+     cy.url().then(resp => {
+         if (resp.includes('terms_agreement')) {
+             cy.wait_for('[for*="checkbox-input"]').click().then(() => {
+                 cy.wait_for('[id="termsAgreementAcceptButton"]').click().then(() => {
+                     cy.url().should('not.contains', '/terms_agreement');
+                 });
+             });
+         }
+     });
+ });
+
+ // dismiss the profile_data page
+ Cypress.Commands.add('profile_data_page', (user, password) => {
+     // / Get the current url
+     cy.url().then(resp => {
+         if (resp.includes('profile_data')) {
+             cy.get('[id="profileDataRoleSelect"]').should('be.visible');
+             cy.wait_for('[id=profileDataRoleDeclineButton]').click().then(() => {
+                 cy.url().should('not.contains', '/profile_data');
+             });
+         }
+     });
+ });
