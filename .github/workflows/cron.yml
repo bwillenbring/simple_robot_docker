@@ -10,7 +10,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      run: touch job_one.txt
+      run: |
+        touch job_one.txt
 
   build:
 
