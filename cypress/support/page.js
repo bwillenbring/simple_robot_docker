@@ -131,7 +131,7 @@ export function save_page() {
  * })
  *
  */
-export get_page_id_by_name(page_name) {
+export function get_page_id_by_name(page_name) {
     const url = `/api/v1/entity/pages?fields=name,page_type&sort=name&filter[name]=${page_name}`;
     cy.get_rest_endpoint({url: url}).then($resp => {
         return $resp.body.data[0].id;
@@ -310,14 +310,14 @@ export function navigate_to_project_page(entity_type='') {
  * cy.remove_page_summaries();
  *
  */
-Cypress.Commands.add('remove_page_summaries', function() {
+export function remove_page_summaries() {
     // Get the grid
     cy.get_grid().then($grid => {
         if ($grid.summaries_visible()) {
             $grid.toggle_summaries_visible();
         }
     });
-});
+}
 
 /**
  * @function ungroup_page
@@ -335,12 +335,13 @@ Cypress.Commands.add('remove_page_summaries', function() {
  * cy.ungroup_page();
  *
  */
-Cypress.Commands.add('ungroup_page', function() {
+
+export function ungroup_page() {
     // Get the grid
     cy.get_grid().invoke('ungroup');
     // Wait for the spinner
     cy.wait_for_spinner();
-});
+}
 
 
 /**
@@ -354,9 +355,9 @@ Cypress.Commands.add('ungroup_page', function() {
  * cy.wait_for_grid();
  *
  */
-Cypress.Commands.add('wait_for_grid', function() {
+export function wait_for_grid() {
     cy.get_grid().its('data_set.loaded').should('eq', true);
-});
+}
 
 
 /**
@@ -467,12 +468,12 @@ export function global_nav(item='plus_button') {
  * cy.stow_gantt();
  *
  */
-Cypress.Commands.add('stow_gantt', function() {
+export function stow_gantt() {
     // Assume you are in list or schedule mode
     cy.get_page().then(page => {
         page.get_child_widgets()[0].stow_away_gantt();
     });
-});
+}
 
 /**
  * @function unstow_gantt
@@ -487,12 +488,12 @@ Cypress.Commands.add('stow_gantt', function() {
  * cy.unstow_gantt();
  *
  */
-Cypress.Commands.add('unstow_gantt', function() {
+export function unstow_gantt() {
     // Assume you are in list or schedule mode
     cy.get_page().then(page => {
         page.get_child_widgets()[0].unstow_away_gantt();
     });
-});
+}
 
 
 /**
@@ -504,24 +505,17 @@ Cypress.Commands.add('unstow_gantt', function() {
  * cy.clear_quick_filter();
  *
  */
-Cypress.Commands.add('clear_quick_filter', () => {
+export function clear_quick_filter() {
     cy.get('div.quick_filter div[sg_selector="button:clear_filter"]').click().then(() => {
         cy.wait_for_spinner();
     });
-});
+}
 
-Cypress.Commands.add('select_nth_row_in_grid', index => {
-    if (index < 0) {
-        index = 0;
-    } else if (index >= Cypress.$('div.row_selector').length) {
-        index = Cypress.$('div.row_selector').length - 1;
-    } else {
-        index = index;
-    }
-    cy.get('div.row_selector:eq(' + index + ')').click().then(() => {
-        cy.wait_for_spinner();
-    });
-});
+
+export function select_nth_row_in_grid(index=0) {
+    cy.get(`div.row_selector:eq${index}`).click();
+    cy.wait_for_spinner();
+}
 
 
 // /* Bring in 2 modules for snake casing and pluralization */

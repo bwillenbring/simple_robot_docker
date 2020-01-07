@@ -50,6 +50,13 @@ Cypress.Commands.add('exit_edit_mode', page.exit_edit_mode);
 Cypress.Commands.add('run_quick_filter', page.run_quick_filter);
 Cypress.Commands.add('save_page', page.save_page);
 Cypress.Commands.add('get_page_id_by_name', page.get_page_id_by_name);
+Cypress.Commands.add('ungroup_page', page.ungroup_page);
+Cypress.Commands.add('remove_page_summaries', page.remove_page_summaries);
+Cypress.Commands.add('wait_for_grid', page.wait_for_grid);
+Cypress.Commands.add('stow_gantt', page.stow_gantt);
+Cypress.Commands.add('unstow_gantt', page.unstow_gantt);
+Cypress.Commands.add('clear_quick_filter', page.clear_quick_filter);
+Cypress.Commands.add('select_nth_row_in_grid', page.select_nth_row_in_grid);
 
 // utils
 import * as utils from './utils'
