@@ -10,8 +10,8 @@ jobs:
     steps:
     - name: create txt file
       run: |
-      touch one.txt
-      ls *.txt
+        touch one.txt
+        ls *.txt
 
   build:
 
