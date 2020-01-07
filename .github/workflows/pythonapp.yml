@@ -3,6 +3,11 @@ name: Run Tests
 on: [push]
 
 jobs:
+  set_shared_env_vars:
+    name: Set Shared Environment Variables
+    runs-on: ubuntu-latest
+    env:
+        SURPRISE: From a different job!!!
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
