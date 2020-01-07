@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
         SURPRISE: From a different job!!!
+    steps:
+      run: |
+        echo I just set 1 env. var
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
