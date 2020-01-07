@@ -9,12 +9,13 @@ jobs:
     env:
         SURPRISE: From a different job!!!
     steps:
-    - name: Print 1 command 
+    - name: Print 1 command
       run: |
         echo hi
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
+    needs: set_shared_env_vars
     env:
         BASE_URL: ${{ secrets.SG_BASE_URL }}
         BROWSER: ${{ secrets.SG_BROWSER }}
@@ -54,6 +55,7 @@ jobs:
 
   robot:
     name: Robot & Selenium Stage
+    needs: set_shared_env_vars
     runs-on: ubuntu-latest
     env:
         BASE_URL: ${{ secrets.SG_BASE_URL }}
