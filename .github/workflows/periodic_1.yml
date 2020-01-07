@@ -1,6 +1,6 @@
 name: CI
 
-on: schedule 
+on: schedule:
 - cron:  '*/5 * * * *'
 
 jobs:
