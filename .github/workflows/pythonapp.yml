@@ -9,8 +9,9 @@ jobs:
     env:
         SURPRISE: From a different job!!!
     steps:
+    - name: Print 1 command 
       run: |
-        echo I just set 1 env. var
+        echo hi
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
