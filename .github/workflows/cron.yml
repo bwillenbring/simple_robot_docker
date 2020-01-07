@@ -4,6 +4,15 @@ on: [push]
 
 jobs:
 
+  one:
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: create txt file
+      run: |
+      touch one.txt
+      ls *.txt
+
   build:
 
     runs-on: ubuntu-latest
@@ -16,7 +25,7 @@ jobs:
 
     - name: echo github vars
       run: |
-        echo ${{github.event}}
+        echo ${{ github.event }}
         echo ${{ github.repository }}
         echo ${{ github.actor }}
         echo ${{ github.sha }}
