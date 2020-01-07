@@ -1,0 +1,32 @@
+name: Cron Jobs
+
+on: [push]
+
+jobs:
+
+  one:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      run: touch job_one.txt
+
+  build:
+
+    runs-on: ubuntu-latest
+    needs: one
+    steps:
+    - uses: actions/checkout@v1
+    - name: ls txt files
+      run: |
+        ls *.txt
+
+    - name: echo job vars
+      run: |
+        echo github.event
+        echo github.repository
+        echo github.actor
+        echo github.sha
+        echo github.ref
+        echo github.actor
