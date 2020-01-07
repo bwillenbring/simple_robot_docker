@@ -16,9 +16,9 @@ jobs:
 
     - name: echo github vars
       run: |
-        echo github.event
-        echo github.repository
-        echo github.actor
-        echo github.sha
-        echo github.ref
-        echo github.actor
+        echo ${{github.event}}
+        echo ${{ github.repository }}
+        echo ${{ github.actor }}
+        echo ${{ github.sha }}
+        echo ${{ github.ref }}
+        echo ${{ github.actor }}
