@@ -25,6 +25,7 @@ Utility functions
  *
  */
 Cypress.Commands.overwrite('log', (originalFn, message, options) => {
+
     cy.task('append_log', message).then(() => {
         return originalFn(message, options);
     });
