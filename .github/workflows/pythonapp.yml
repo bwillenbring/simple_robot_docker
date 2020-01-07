@@ -11,7 +11,8 @@ jobs:
     steps:
     - name: Print 1 command
       run: |
-        echo hi
+        echo echoing surpirse...
+        echo $SURPRISE
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
@@ -27,6 +28,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build the Cypress Docker Container
       run: |
+        echo echoing surpirse...
+        echo $SURPRISE
         docker-compose build cypress
     - name: Up the Cypress Container
       env:
@@ -71,6 +74,8 @@ jobs:
         python-version: 2.7
     - name: Install python dependencies
       run: |
+        echo echoing surpirse...
+        echo $SURPRISE
         python -m pip install --upgrade pip
         pip install -r robot/requirements.txt
     - name: Lint with flake8
