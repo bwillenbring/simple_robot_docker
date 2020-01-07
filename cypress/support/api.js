@@ -1,27 +1,44 @@
-Cypress.Commands.add(
-    'get_rest_endpoint',
-    (
-        url,
-        method,
-        failOnStatusCode = true,
-        data = {},
-        content_type = 'application/json',
-        response_content_type = '',
-        log_command = true,
-        custom_request_headers = {}
-    ) => {
-        // This method accepts an url and method, and returns the REST response
-        var request_headers = {
-            ...{
-                Authorization: 'Bearer ' + Cypress.config('TOKEN').body.access_token,
-                'content-type': content_type,
-            },
-            ...custom_request_headers,
-        };
+// cy.clear_thumbnail(entity_type, id)
+// Sets the thumbnail of a specific entity to null by making a REST api request on the entity's `image` field. Returns the REST api response object. Dispatches a 1000 ms wait after the response is returned so that the UI can catch up to the server.
+/**
+ * @function clear_thumbnail
+ * @description Sets the thumbnail for a particular entity (by type and id) to `null`.
+ * @author Ben Willenbring <benjamin.willenbring@autodesk.com>
+ *
+ * @param {String} entity_type - The CamelCase entity type
+ * @param {Number} id - The id of the entity.
+ *
+ * @returns {Object}}
+ *
+ * @example
+ * // Clear out Asset 1167's thumbnail
+ * cy.clear_thumbnail('Asset', 1167);
+ *
+ */
+Cypress.Commands.add('clear_thumbnail', function(entity_type, id) {
+    cy
+        .edit_entity(entity_type, id, {
+            image: null,
+        })
+});
 
-        if (response_content_type != '') {
-            request_headers.accept = response_content_type;
-        }
+
+export function get_rest_endpoint({
+    url,
+    method = 'GET',
+    failOnStatusCode = true,
+    data = { },
+    content_type = 'application/json',
+    response_content_type = '',
+    log_command = true,
+    custom_request_headers = { },
+    request_headers = { Authorization: `Bearer ${Cypress.config('TOKEN').body.access_token}` }
+    } = { }) {
+        // Always set
+        request_headers.content_type = content_type;
+        request_headers.accept = (response_content_type !== '') ? response_content_type : null
+
+        // Return a cy.request
         return cy
             .request({
                 method: method,
@@ -36,7 +53,57 @@ Cypress.Commands.add(
                 return resp;
             });
     }
-);
+
+/**
+ * @function get_field
+ * @returns {Object} REST api repsonse from a schema GET request.
+ * @description Gets a field using a REST api endpoint call to `/api/1/schema/{entity_type}/fields/{system_field_name}`.
+ *
+ * @author Ben Willenbring <benjamin.willenbring@autodesk.com>
+ *
+ * @param {String} entity_type - The CamelCase entity type.
+ * @param {String} system_field_name - The system name of the display column (eg: sg_status_list).
+ *
+ * @example
+ * cy.get_field('Shot', 'sg_qa_number').then(resp => {
+ *    assert.isTrue(resp.body.data.data_type.value !== 'text');
+ * })
+ *
+ */
+export function get_field(entity_type, system_field_name) {
+    let endpoint = '/api/v1/schema/' + entity_type + '/fields/' + system_field_name;
+    const params = {
+        url: endpoint,
+        method: 'GET',
+        failOnStatusCode: false
+    }
+    cy.get_rest_endpoint(params).then($resp => {
+        return $resp;
+    });
+}
+
+/**
+ * @function field_exists
+ * @returns {Boolean}
+ * @author Ben Willenbring <benjamin.willenbring@autodesk.com>
+ * @description Returns whether or not a given field exists for a given entity type.
+ * @param {String} entity_type - The CamelCase entity type.
+ * @param {String} system_field_name - The system field name.
+ *
+ * @example
+ * cy.field_exists('Task', 'sg_qa_currency').then(exists => {
+ *    assert.isTrue(exists);
+ * })
+ *
+ */
+export function field_exists(entity_type, system_field_name) {
+    let endpoint = '/api/v1/schema/' + entity_type + '/fields/' + system_field_name;
+    cy.get_field(entity_type, system_field_name).then($resp => {
+        return $resp.status == 200;
+    });
+}
+
+
 
 /**
  * @function get_access_token
@@ -114,3 +181,95 @@ export function run_python_script(script, args) {
         return $resp.stdout;
     });
 }
+
+
+
+/**
+ * @function set_task_thumbnail_render_mode
+ * @description Configures the render mode of Task.image to one of 3 possible values:
+ * <ol>
+ * <li>manual</li>
+ * <li>latest</li>
+ * <li>query</li>
+ * </ol>
+ * @author Ben Willenbring <benjamin.willenbring@autodesk.com>
+ *
+ * @param {String} config=manual - The render mode. Must be one of the allowed values.
+ *
+ * @returns Returns this...
+ *
+ * @example
+ * // Configure for manual Uploads
+ * cy.set_task_thumbnail_render_mode('manual');
+ *
+ * // Latest Version or Note
+ * cy.set_task_thumbnail_render_mode('latest');
+ *
+ * // Query-based (uses the default query)
+ * cy.set_task_thumbnail_render_mode('query');
+ *
+ */
+Cypress.Commands.add('set_task_thumbnail_render_mode', function(config) {
+    let csrf = 'csrf_token_u' + Cypress.config('admin_id');
+    let url = '/background_job/configure_dc';
+    let configs = ['manual', 'latest', 'query'];
+    if (!configs.includes(config)) {
+        config = 'manual';
+    }
+    // Choose a config
+    cy.fixture('task_render_modes/config_' + config + '.json').then(config_json => {
+        let data = {
+            csrf_token: Cypress.config(csrf),
+            dialog_params: JSON.stringify(config_json),
+        };
+        cy
+            .request({
+                url: url,
+                method: 'POST',
+                form: true,
+                body: data,
+                failOnStatusCode: false,
+            })
+            .then($resp => {
+                console.log(JSON.stringify($resp, undefined, 2));
+            });
+    });
+});
+
+
+// cy.get_private_api_endpoint(url, {options})
+// Sends a request to a private endpoint url, and sends back the response
+Cypress.Commands.add('get_private_api_endpoint', function(
+    url,
+    options = {
+        method: 'GET',
+        failOnStatusCode: true,
+        data: {},
+        content_type: 'application/json',
+        response_content_type: '',
+    }
+) {
+    // This method accepts an url and method, and returns the REST response
+    let request_headers = {
+        Authorization: 'Bearer ' + Cypress.config('TOKEN').body.access_token,
+        'content-type': options.response_content_type,
+        'Shotgun-Private-Api': 'assignment',
+    };
+
+    if (options.response_content_type != '') {
+        request_headers.accept = options.response_content_type;
+    }
+    // console.log("data passed in..." + data.toString())
+    cy
+        .request({
+            method: options.method,
+            url: url,
+            headers: request_headers,
+            body: options.data,
+            failOnStatusCode: options.failOnStatusCode,
+            followRedirect: false,
+        })
+        .then(resp => {
+            return resp;
+        });
+});
