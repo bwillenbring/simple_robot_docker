@@ -15,12 +15,12 @@
  * cy.clear_thumbnail('Asset', 1167);
  *
  */
-Cypress.Commands.add('clear_thumbnail', function(entity_type, id) {
-    cy
-        .edit_entity(entity_type, id, {
-            image: null,
-        })
-});
+export function clear_thumbnail(entity_type, id) {
+    // Just set the image field to null
+    cy.edit_entity(entity_type, id, {
+        image: null,
+    });
+}
 
 
 export function get_rest_endpoint({
@@ -209,32 +209,25 @@ export function run_python_script(script, args) {
  * cy.set_task_thumbnail_render_mode('query');
  *
  */
-Cypress.Commands.add('set_task_thumbnail_render_mode', function(config) {
-    let csrf = 'csrf_token_u' + Cypress.config('admin_id');
-    let url = '/background_job/configure_dc';
-    let configs = ['manual', 'latest', 'query'];
-    if (!configs.includes(config)) {
-        config = 'manual';
-    }
-    // Choose a config
-    cy.fixture('task_render_modes/config_' + config + '.json').then(config_json => {
-        let data = {
-            csrf_token: Cypress.config(csrf),
+
+export function set_task_thumbnail_render_mode(config='manual') {
+    // Only allow either: manual, latest, or query
+    if (! ['manual', 'latest', 'query'].includes(config)) { config = 'manual' }
+    // Load the fixture data to make the request...
+    cy.fixture(`task_render_modes/config_${config}.json`).then(config_json => {
+        const data = {
+            csrf_token: Cypress.config(`csrf_token_u${Cypress.config('admin_id')}`),
             dialog_params: JSON.stringify(config_json),
         };
-        cy
-            .request({
-                url: url,
-                method: 'POST',
-                form: true,
-                body: data,
-                failOnStatusCode: false,
-            })
-            .then($resp => {
-                console.log(JSON.stringify($resp, undefined, 2));
-            });
+        cy.request({
+            url: '/background_job/configure_dc',
+            method: 'POST',
+            form: true,
+            body: data,
+            failOnStatusCode: false,
+        })
     });
-});
+}
 
 
 // cy.get_private_api_endpoint(url, {options})

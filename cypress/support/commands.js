@@ -2,10 +2,11 @@
 import * as api from './api';
 Cypress.Commands.add('get_access_token', api.get_access_token);
 Cypress.Commands.add('get_rest_endpoint', api.get_rest_endpoint);
-
 Cypress.Commands.add('get_field', api.get_field);
 Cypress.Commands.add('field_exists', api.field_exists);
 Cypress.Commands.add('run_python_script', api.run_python_script);
+Cypress.Commands.add('set_task_thumbnail_render_mode', api.set_task_thumbnail_render_mode);
+Cypress.Commands.add('clear_thumbnail', api.clear_thumbnail);
 
 // CRUD
 import * as crud from './crud';
@@ -19,14 +20,15 @@ Cypress.Commands.add('get_schema', crud.get_schema);
 Cypress.Commands.add('batch_request', crud.batch_request);
 Cypress.Commands.add('conditionally_create', crud.conditionally_create);
 
+
 // login functionality
 import * as login from './login';
 Cypress.Commands.add('login_admin', login.login_admin);
 
+
 // Schema functionality
 import * as schema from './schema';
 Cypress.Commands.add('get_access_token', api.get_access_token);
-
 
 
 // page and navigation functionality
@@ -49,13 +51,16 @@ Cypress.Commands.add('create_query_field', query_fields.create_query_field);
 Cypress.Commands.add('get_field_by_display_name', query_fields.get_field_by_display_name);
 Cypress.Commands.add('verify_field_exists', query_fields.verify_field_exists);
 
+
 // New entity form functionality
 import * as new_entity_forms from './new_entity_forms';
 Cypress.Commands.add('set_field_in_NwEnttyDlg', new_entity_forms.set_field_in_NwEnttyDlg);
 
+
 // i18next functionality
 import * as i18n from './i18n';
 Cypress.Commands.add('get_translation', i18n.get_translation);
+
 
 // Paste functionality (for importer)
 import { paste } from './clipboard';
