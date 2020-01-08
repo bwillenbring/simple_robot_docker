@@ -1,16 +1,17 @@
 # Cypress & Robot Docker Container
 
-![](https://github.com/bwillenbring/simple_robot_docker/workflows/Run%20Tests/badge.svg)
+![Actions Status](https://github.com/bwillenbring/simple_robot_docker/workflows/Run%20Tests/badge.svg)
 
-[repoImage]: robot/fixtures/pipeline.jpg "Barebones Robot Docker Container"
+
+[repoImage]: robot/fixtures/pipeline.jpg "Barebones Cypress and Robot Docker Container"
 
 ![repoImage]
 
 **Includes the following:**
 - **Github Actions Workflow**
-  - [Runs Robot and Cypress tests in parallel](.github/workflows/pythonapp.yml)
-  - [Sends the Cypress mochawesome html report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/cypress/mochawesome.html)
-  - [Sends the robot report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/robot/report.html)
+  - [Runs 3 jobs in parallel](.github/workflows/pythonapp.yml)
+  - [Cypress report](http://github-bwillenbring.s3-website.us-east-2.amazonaws.com/cypress/mochawesome.html)
+  - [Robot report](http://github-bwillenbring.s3-website.us-east-2.amazonaws.com/robot/report.html)
 
 
 - **Cypress**
