@@ -60,6 +60,64 @@ describe('Sample Spec', function() {
         })
     })
 
+    describe('Query Builder', function() {
+        beforeEach(function() {
+            // Load the project shots page
+            cy.navigate_to_project_page('Shot');
+            cy.set_page_mode('list'); // eg: list, thumb, md, task
+        });
+
+        it('tests if filter panel is visible', function() {
+            cy.filter_panel_is_visible().then(v => {
+                cy.log(v);
+            })
+        })
+
+        it('opens the filter panel', function() {
+            cy.expand_filter_panel();
+        })
+
+        it('creates number filters', function() {
+            cy.create_new_filter({
+                name: 'Is Greater Than 5 & < 10',
+                match_type: 'all',
+                options: {
+                    filters: [
+                        ['Id', 'is_greater_than', 5],
+                        ['Id', 'is_less_than', 10]
+                    ]
+                }
+            })
+        })
+
+        it('creates date token filters', function() {
+            cy.create_new_filter({
+                name: 'Created today, after yesterday, before tomorrow',
+                match_type: 'any',
+                options: {
+                    filters: [
+                        ['Date Created', 'date_is', 'Today'],
+                        ['Date Created', 'is_after', 'yesterday'],
+                        ['Date Created', 'is_before', 'tomorrow']
+                    ]
+                }
+            })
+        })
+
+        it('creates me filters', function() {
+            cy.create_new_filter({
+                name: 'Created by or updated by me',
+                match_type: 'any',
+                options: {
+                    filters: [
+                        ['Created by', 'is', 'Me', {autocomplete: true}],
+                        ['Updated by', 'is', 'Me', {autocomplete: true}],
+                    ]
+                }
+            })
+        })
+    })
+
     describe('Page Layout Handling', function() {
         before(function() {
             // Load the project shots page
