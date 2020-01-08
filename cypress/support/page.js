@@ -179,7 +179,7 @@ Cypress.Commands.add('handle_menu_item', function(txt) {
         .filter(function(index) {
             return Cypress.$(this).text() == txt;
         })
-        .click();
+        .click({ force: true });
 });
 
 

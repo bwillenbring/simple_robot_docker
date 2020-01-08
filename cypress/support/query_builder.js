@@ -1,63 +1,79 @@
-/* ------------------------------------------------------------------------------------------------------
 
-FILTER PANEL AND QUERY BUILDER COMMANDS BELOW
-
------------------------------------------------------------------------------------------------------- */
-
-Cypress.Commands.add('filter_panel_is_visible', () => {
+export function filter_panel_is_visible() {
+    // Return true or false
     return Cypress.$("[sg_id='filter_panel']").length > 0;
-});
+}
 
-Cypress.Commands.add('filter_panel_is_docked', () => {
-    return Cypress.$("[sg_selector='docked_filter_panel']").length > 0;
-});
+export function filter_panel_is_docked() {
+    // Return true or false
+    // return Cypress.$("[sg_selector='docked_filter_panel']").length > 0;
+    cy.get_page().then(page => {
+        return page.is_filter_panel_docked();
+    })
+}
 
-Cypress.Commands.add('filter_panel_has_filters', () => {
+export function filter_panel_has_filters() {
     return Cypress.$("[sg_selector='button:clear_filters']:contains('No filters applied')").length > 0;
-});
+}
 
-Cypress.Commands.add('dock_filter_panel', () => {
-    if (cy.filter_panel_is_docked() == false) {
-        cy.get("[sg_selector='button:dock_panel']").click();
-    }
-});
+export function dock_filter_panel() {
+    // First, expand the filter panel
+    // cy.expand_filter_panel();
+    // cy.get("[sg_selector='button:dock_panel']").click();
 
-Cypress.Commands.add('expand_filter_panel', () => {
+    cy.filter_panel_is_docked().then(docked => {
+        if (! docked) {
+            // Dock it
+            cy.get("[sg_selector='button:dock_panel']").click();
+        }
+    })
+}
+
+
+export function expand_filter_panel() {
     cy.filter_panel_is_visible().then(fp_is_visible => {
         if (fp_is_visible == false) {
             cy.get("[sg_selector='filter_panel_button']:last").click();
         } else {
-            cy.dock_filter_panel();
+            // Is it visible and docked?
+            cy.filter_panel_is_docked().then(docked => {
+                if (! docked) {
+                    cy.dock_filter_panel();
+                }
+            })
         }
     });
-});
+}
 
-Cypress.Commands.add('click_new_filter', () => {
+export function click_new_filter() {
     cy.wait_for_spinner().then(() => {
         cy.get("[sg_selector='button:new_filter']").click();
     });
-});
+}
 
-Cypress.Commands.add('save_filter', () => {
-    cy.get("[sg_id='saved_filter_panel'] [sg_selector='button:submit']").click().then(() => {
-        cy.wait_for_spinner();
-    });
-});
+export function save_filter() {
+    cy.get("[sg_id='saved_filter_panel'] [sg_selector='button:submit']").click();
+    cy.wait_for_spinner();
+}
 
-Cypress.Commands.add('create_new_filter', (name, match_type = 'all', options = {}) => {
+export function create_new_filter({
+    name = 'Cypress filter',
+    match_type = 'all',
+    options = { filters: [] }
+} = { }) {
     // 1. Make sure the filter panel is open, and a new filter widget is exposed
-    cy.expand_filter_panel().then(() => {
-        cy.click_new_filter();
-    });
-    // 2. Type the filter name
-    cy.get("[sg_id='saved_filter_panel']").within($fp => {
-        cy.get("[sg_selector='input:name']").type(name);
-    });
+    cy.expand_filter_panel();
 
-    // 3. Choose the global filter match type
+    // 2. Click + new filter
+    cy.click_new_filter();
+
+    // 3. Type the filter name
+    cy.get("[sg_id='saved_filter_panel'] [sg_selector='input:name']").type(name);
+
+    // 4. Choose the global filter match type
     cy.get("[sg_selector='dropdown:query_condition']:first").select(match_type);
 
-    // 4. Iterate over each of the passed in filters
+    // 5. Iterate over each of the passed in filters
     cy.wrap(options['filters']).each($filter => {
         // 5. Click the LAST + button (which could also be the only one)
         cy.get("[sg_selector='button:plus']:last").click().then(() => {
@@ -105,9 +121,10 @@ Cypress.Commands.add('create_new_filter', (name, match_type = 'all', options = {
 
     //Now, you have to save the filter
     cy.save_filter();
-});
+}
 
-Cypress.Commands.add('disable_standard_project_condition', () => {
+
+export function disable_standard_project_condition() {
     cy
         .get('#page_project_condition_gear_menu')
         .click()
@@ -122,8 +139,8 @@ Cypress.Commands.add('disable_standard_project_condition', () => {
                 .get('#page_project_condition_disabled_warning:visible')
                 .should('exist', 'The disabled project warning is visible in the filter panel.');
         });
-});
+}
 
-Cypress.Commands.add('get_page_filter_panel', () => {
+export function get_page_filter_panel() {
     return Cypress.$(".sgc_filter_panel[filter_panel_type='main']");
-});
+}
