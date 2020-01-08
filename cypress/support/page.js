@@ -19,11 +19,10 @@
  * cy.handle_menu_item('Creative Brief');
  *
  */
-
-Cypress.Commands.add('click_toolbar_item', function(item) {
+export function click_toolbar_item(item) {
     // Assumes you're on an entity query page
     cy.get(`[sg_id="page:root_widget:body:Tlbr"] div.sg_button:contains("${item}")`).click();
-});
+}
 
 /**
  * @function get_page
@@ -43,12 +42,12 @@ Cypress.Commands.add('click_toolbar_item', function(item) {
  * })
  *
  */
-Cypress.Commands.add('get_page', function() {
+export function get_page() {
     // First, get the global SG object
     cy.get_SG().then($sg => {
         return $sg.globals.page.root_widget.get_child_widgets()[2];
     });
-});
+}
 
 /**
  * @function get_grid
@@ -74,7 +73,7 @@ Cypress.Commands.add('get_page', function() {
  * })
  *
  */
-Cypress.Commands.add('get_grid', function() {
+export function get_grid() {
     // First, get the page...
     cy.get_page().then(page => {
         let ng = page.get_child_widgets()[0];
@@ -83,7 +82,7 @@ Cypress.Commands.add('get_grid', function() {
         }
         return ng;
     });
-});
+}
 
 /**
  * @function save_page
@@ -173,14 +172,14 @@ export function get_page_id_by_name(page_name) {
  * cy.handle_menu_item('Add Note to Selected...');
  *
  */
-Cypress.Commands.add('handle_menu_item', function(txt) {
+export function handle_menu_item(menu_text) {
     cy
         .get('.sg_menu_body:visible span[sg_selector^="menu:"]')
         .filter(function(index) {
-            return Cypress.$(this).text() == txt;
+            return Cypress.$(this).text() == menu_text;
         })
         .click({ force: true });
-});
+}
 
 
 /**
@@ -244,7 +243,6 @@ export function navigate_to_page(page='') {
     cy
         .visit(page, {
             onLoad: win => {
-                // console.log('typeof win.sg...' + typeof win.SG);
                 let thumb = Cypress.$('div.sg_user_thumb');
                 if (!thumb.is(':visible')) {
                     console.log('reload!');
@@ -662,67 +660,6 @@ Cypress.Commands.add('invoke_dlg_configure_field', field_name => {
 });
 
 
-
-
-/**
- * @function wait_for_grid
- * @description Makes an assertion that `grid.data_set.loaded == true`.
- * @author Ben Willenbring <benjamin.willenbring@autodesk.com>
- *
- * @example
- * // Go to a page of Tasks
- * cy.navigate_to_project_page('Task');
- * cy.wait_for_grid();
- *
- */
-Cypress.Commands.add('wait_for_grid', function() {
-    cy.get_grid().its('data_set.loaded').should('eq', true);
-});
-
-/**
- * @function invoke_new_entity_form
- * @description Brings up the new entity form for a given entity_type. Must be used from a Shotgun page with a global nav, while logged in.
- * @author Ben Willenbring <benjamin.willenbring@autodesk.com>
- *
- * @param {String} entity_type - A valid CamelCase entity type (not the Display Name).
- *
- *
- * @example <caption>Bring up new Project form</caption>
- * cy.invoke_new_entity_form('Project');
- *
- * @example <caption>Bring up new Shot form</caption>
- * cy.invoke_new_entity_form('Shot');
- *
- * @example <caption>Bring up new Task form</caption>
- * cy.invoke_new_entity_form('Task');
- *
- */
-Cypress.Commands.add('invoke_new_entity_form', (entity_type = '') => {
-    cy.wait_for_spinner().then(() => {
-        if (entity_type == '') {
-            cy.get_SG().then(SG => {
-                SG.globals.page.root_widget.get_child_widgets()[2].create_new_entity();
-                // Wait for the new entity form to be present
-                cy.get('div.sg_dialog.sg_new_entity_form').should('be.visible');
-            });
-        } else {
-            // Click the plus btn
-            cy.global_nav('plus_button').then(() => {
-                // Wait for the menu
-                cy.get('.sg_menu_body.sg_scroll_area').should('exist').within(menu => {
-                    // Click the menu item within the menu whose text is an exact match
-                    cy
-                        .get('span[sg_selector^="menu:"]')
-                        .filter(function(index) {
-                            return Cypress.$(this).text() == entity_type;
-                        })
-                        .click();
-                });
-            });
-        }
-    });
-});
-
 /* ----------------------------------------------------------------------
 IMPORTER
 ---------------------------------------------------------------------- */
@@ -1051,9 +988,7 @@ export function refresh_grid(reload_schema = false) {
     });
 }
 
-/* --------------------------------------------------
-cy.edit_field_in_grid('code', {record_id: 45, new_value:'Tommy'})
--------------------------------------------------- */
+
 /**
  * @function edit_field_in_grid
  *

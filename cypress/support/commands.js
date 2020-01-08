@@ -57,6 +57,10 @@ Cypress.Commands.add('stow_gantt', page.stow_gantt);
 Cypress.Commands.add('unstow_gantt', page.unstow_gantt);
 Cypress.Commands.add('clear_quick_filter', page.clear_quick_filter);
 Cypress.Commands.add('select_nth_row_in_grid', page.select_nth_row_in_grid);
+Cypress.Commands.add('click_toolbar_item', page.click_toolbar_item);
+Cypress.Commands.add('get_page', page.get_page);
+Cypress.Commands.add('get_grid', page.get_grid);
+Cypress.Commands.add('handle_menu_item', page.handle_menu_item);
 
 
 // utils
