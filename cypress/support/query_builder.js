@@ -59,7 +59,11 @@ export function save_filter() {
 export function create_new_filter({
     name = 'Cypress filter',
     match_type = 'all',
-    options = { filters: [] }
+    options = {
+        filters: [],
+        disable_standard_project_condition: false,
+        save_filter: true
+    }
 } = { }) {
     // 1. Make sure the filter panel is open, and a new filter widget is exposed
     cy.expand_filter_panel();
@@ -80,44 +84,51 @@ export function create_new_filter({
             //Stay within the correct filter row
             cy.get('tr.condition_row:last').then($row => {
                 // Expand the fields menu
-                console.log('current row is ' + $row);
-                console.log('----------------------');
-                cy.wrap($row).find('.condition_column_col .sg_menu_dropdown').click().then(() => {
-                    //Scroll to the top
-                    let scrollable_menu = Cypress.$('div.sg_menu_body.sg_scroll_area');
-                    let menu_items = scrollable_menu.find('span.sg_menu_item_content');
-                    scrollable_menu.scrollTo(0);
-                    menu_items.each(function() {
-                        let t = Cypress.$(this).text();
-                        if (t == $filter[0]) {
-                            //Click it
-                            Cypress.$(this).trigger('click');
-                            return false;
-                        }
-                    }); //end menu_items.each
+                cy.wrap($row).find('.condition_column_col .sg_menu_dropdown').click();
 
-                    cy.wrap(scrollable_menu).should('not.be.visible').then(() => {
-                        // Select the filter operator (is, contains, greater_than, etc.)
-                        cy.wrap($row).find('.condition_type_select').click();
-                        cy.get("div.sg_menu_body:visible [sg_selector='menu:" + $filter[1] + "']").click();
-                        // cy.get("span.sg_menu_item_content:visible:contains('" + $filter[1] + "')").click()
-                    });
-                }); // End cy.wrap($row).find
+                // Click the field name in the fields menu
+                // expects field name to match: Date Created
+                // does not expect: date_created
+                cy.handle_menu_item($filter[0]);
+                cy.wrap($row).find('.condition_type_select').click();
+                cy.get("div.sg_menu_body:visible [sg_selector='menu:" + $filter[1] + "']").click();
+
                 // Select the filter value(s)
                 cy.wrap($row).find('.condition_value').click();
                 let val = $filter[2];
 
-                // cy.get("div.entity_editor").find("input,textarea").type($filter[2])
-                cy
-                    .get('div.entity_editor input,div.entity_editor textarea, input.date_editor')
-                    .type($filter[2])
-                    .trigger('keydown', {
-                        keyCode: 9,
-                        which: 9,
-                    });
+                // Handle the possibility of autocomplete
+                if ($filter.length > 3 && $filter[3].hasOwnProperty('autocomplete') && $filter[3].autocomplete == true) {
+                    // Type the value into the editor
+                    cy
+                        .get('div.entity_editor input,div.entity_editor textarea, input.date_editor')
+                        .type($filter[2]);
+
+                    // Wait for the autocomplete dropdown
+                    cy.get('.entity_editor_listbox').should('be.visible');
+                    // Click the first autocompleted match...
+                    cy.get('.entity_editor_listbox match:first').click();
+                    // The matched brick should appear in the entity editor
+                    cy.get('[sg_id="entity_editor"] .entity_editor_matched').should('be.visible');
+                }
+                else {
+                    // Type the value into the filter value input
+                    cy
+                        .get('div.entity_editor input,div.entity_editor textarea, input.date_editor')
+                        .type($filter[2])
+                        .trigger('keydown', {
+                            keyCode: 9,
+                            which: 9,
+                        });
+                }
+
             }); //end cy.get("tr.condition_row:last")
         }); // end cy.get("[sg_selector='button:plus']:last")
     }); //end cy.wrap(options["filters"]).each
+
+    if (options.disable_standard_project_condition) {
+        cy.disable_standard_project_condition();
+    }
 
     //Now, you have to save the filter
     cy.save_filter();
@@ -125,20 +136,8 @@ export function create_new_filter({
 
 
 export function disable_standard_project_condition() {
-    cy
-        .get('#page_project_condition_gear_menu')
-        .click()
-        .then(() => {
-            cy
-                .get("span[sg_selector='menu:disable_standard_page_project_condition']")
-                .should('contains', 'Disable Standard Project Condition', 'Disable proj. condition menu is visible');
-        })
-        .click()
-        .then(() => {
-            cy
-                .get('#page_project_condition_disabled_warning:visible')
-                .should('exist', 'The disabled project warning is visible in the filter panel.');
-        });
+    cy.get('#page_project_condition_gear_menu').click();
+    cy.handle_menu_item('Disable Standard Page Project Condition');
 }
 
 export function get_page_filter_panel() {

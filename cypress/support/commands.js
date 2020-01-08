@@ -58,8 +58,23 @@ Cypress.Commands.add('unstow_gantt', page.unstow_gantt);
 Cypress.Commands.add('clear_quick_filter', page.clear_quick_filter);
 Cypress.Commands.add('select_nth_row_in_grid', page.select_nth_row_in_grid);
 
+
 // utils
 import * as utils from './utils'
+
+
+// Query Builder
+import * as qb from './query_builder'
+Cypress.Commands.add('filter_panel_is_visible', qb.filter_panel_is_visible);
+Cypress.Commands.add('filter_panel_is_docked', qb.filter_panel_is_docked);
+Cypress.Commands.add('filter_panel_has_filters', qb.filter_panel_has_filters);
+Cypress.Commands.add('dock_filter_panel', qb.dock_filter_panel);
+Cypress.Commands.add('expand_filter_panel', qb.expand_filter_panel);
+Cypress.Commands.add('click_new_filter', qb.click_new_filter);
+Cypress.Commands.add('save_filter', qb.save_filter);
+Cypress.Commands.add('create_new_filter', qb.create_new_filter);
+Cypress.Commands.add('disable_standard_project_condition', qb.disable_standard_project_condition);
+Cypress.Commands.add('get_page_filter_panel', qb.get_page_filter_panel);
 
 
 // Query Field functionality

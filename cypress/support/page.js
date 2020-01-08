@@ -175,7 +175,7 @@ export function get_page_id_by_name(page_name) {
  */
 Cypress.Commands.add('handle_menu_item', function(txt) {
     cy
-        .get('div.sg_menu_body span[sg_selector^="menu:"]')
+        .get('.sg_menu_body:visible span[sg_selector^="menu:"]')
         .filter(function(index) {
             return Cypress.$(this).text() == txt;
         })
