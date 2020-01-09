@@ -9,8 +9,7 @@ node_modules*
 videos/*.mp4
 
 # screenshots
-screenshots/*.png
-!reports/README.md
+screenshots/!*.png
 
 # reports
 reports/*
@@ -21,12 +20,12 @@ mochawesome-report/*
 !mochawesome-report/README.md
 
 ###############################################################################
-# cypress specs => first, ignore everything
+# cypress specs
 integration/*
 
 # allow 1st level .js files
 !integration/*.js
 
-# allow nested .js in these directories
-!integration/regressions/*.js
-!integration/workflow/*.js
+# allow regressions and workflow directories
+!integration/regressions/*
+!integration/workflow/*
