@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
         SURPRISE: From a different job!!!
+        BASE_URL: ${{ secrets.SG_BASE_URL }}
+        BROWSER: ${{ secrets.SG_BROWSER }}
+        USERNAME: ${{ secrets.SG_USERNAME }}
+        PASSWORD: ${{ secrets.SG_PASSWORD }}
 
     steps:
       - name: First Step => Checkout
