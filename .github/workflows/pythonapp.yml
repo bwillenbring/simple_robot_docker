@@ -10,10 +10,20 @@ jobs:
         SURPRISE: From a different job!!!
     steps:
     - uses: actions/checkout@v1
-    - run: |
-        echo Attempting to create a shared_artifacts directory
+
+    - name: Create a test Project with Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 2.7
+
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r robot/requirements.txt
+        export TEST_PROJECT_ID2=$(python robot/testLauncher/create_test_project.py)
+        echo "Created Test Project $TEST_PROJECT_ID2"
+        echo Saving to shared_artifacts
         mkdir -p shared_artifacts
-        echo 45 > shared_artifacts/TEST_PROJECT_ID.txt
+        echo $TEST_PROJECT_ID2 > shared_artifacts/TEST_PROJECT_ID.txt
     - uses: actions/upload-artifact@v1
       with:
         name: my-artifact
