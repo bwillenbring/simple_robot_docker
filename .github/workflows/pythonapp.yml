@@ -147,6 +147,8 @@ jobs:
       run: |
         # export TEST_PROJECT_ID=$(python robot/testLauncher/create_test_project.py)
         # echo "Created Test Project $TEST_PROJECT_ID"
+        export TEST_PROJECT_ID=$(cat shared_artifacts/TEST_PROJECT_ID.txt)
+        echo "Reset Test Project Id to... $TEST_PROJECT_ID"
         printenv
         robot --outputdir robot/reports robot/test/simple-variables.robot
         echo "Building the docker image..."
