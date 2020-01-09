@@ -516,9 +516,11 @@ export function select_nth_row_in_grid(index=0) {
 }
 
 
-// /* Bring in 2 modules for snake casing and pluralization */
-// let snake = require('to-snake-case');
-// let pluralize = require('pluralize');
+Cypress.Commands.add('select_row_by_id', function(id) {
+    // Note, this assumes your page is in list mode
+    // use :first because with grouping applied, this selector could appear multiple times
+    cy.get(`.row_selector[sg_selector="row_selector:record_id_${id}"]:first label`).click({ force: true });
+});
 
 
 
@@ -1120,6 +1122,25 @@ Cypress.Commands.add('get_unique_field_name', (entity_type, field_name) => {
             }
         }
         return unique_name;
+    });
+});
+
+
+Cypress.Commands.add('enter_design_mode', function() {
+    // Click Design mode
+    cy.get('div[sg_selector="button:page_menu"]').click();
+    // Click 'Design Page'
+    cy.get('div.sg_menu_body:visible span[sg_selector="menu:design_page"]').click();
+});
+
+Cypress.Commands.add('exit_design_mode', function() {
+    // Click the first instance of a cancel button
+    cy.get('div.sgc_canvas_designer_header [sg_selector="button:cancel"]:first').click();
+});
+
+Cypress.Commands.add('get_page_mode', function() {
+    cy.get_page().then(page => {
+        return page.get_mode();
     });
 });
 

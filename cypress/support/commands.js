@@ -89,8 +89,9 @@ Cypress.Commands.add('verify_field_exists', query_fields.verify_field_exists);
 
 
 // New entity form functionality
-import * as new_entity_forms from './new_entity_forms';
-Cypress.Commands.add('set_field_in_NwEnttyDlg', new_entity_forms.set_field_in_NwEnttyDlg);
+import * as nwe from './new_entity_forms';
+Cypress.Commands.add('set_field_in_NwEnttyDlg', nwe.set_field_in_NwEnttyDlg);
+Cypress.Commands.add('invoke_new_entity_form', nwe.invoke_new_entity_form);
 
 
 // i18next functionality
@@ -107,3 +108,20 @@ Cypress.Commands.add(
     },
     paste
 );
+
+// Preferences
+import * as prefs from './preferences';
+// Cypress.Commands.add('get_translation', i18n.get_translation);
+
+// Permissions
+import * as perms from './permissions';
+Cypress.Commands.add('duplicate_permission_role', perms.duplicate_permission_role);
+Cypress.Commands.add('reset_permission_group', perms.reset_permission_group);
+Cypress.Commands.add('configure_permissions_group', perms.configure_permissions_group);
+
+
+// Network routes
+import * as routes from './routes'
+
+// Regressions
+import * as reg from './regressions'

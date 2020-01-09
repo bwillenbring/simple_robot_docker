@@ -33,7 +33,7 @@ Cypress.Commands.add('batch_create_entities', function(options) {
 });
 
 Cypress.Commands.add('check_version', function(version_id, retries = 5) {
-    let sel = 'td[record_id=' + version_id + '][field="image"]';
+    const sel = `td[record_id="${version_id}"][field="image"]`;
     let is_ready = false;
     this.attempts++;
 
@@ -83,60 +83,33 @@ Cypress.Commands.add('edit_asset_in_grid', function(field) {
     cy.get('div.entity_editor textarea:first').type(field.new_value + '{enter}');
 });
 
-Cypress.Commands.add('enter_design_mode', function() {
-    // Click Design mode
-    cy.get('div[sg_selector="button:page_menu"]').click();
-    // Click 'Design Page'
-    cy.get('div.sg_menu_body:visible span[sg_selector="menu:design_page"]').click();
-});
 
-Cypress.Commands.add('exit_design_mode', function() {
-    // Click the first instance of a cancel button
-    cy.get('div.sgc_canvas_designer_header [sg_selector="button:cancel"]:first').click();
-});
 
-Cypress.Commands.add('get_page_id_by_name', function(page_name) {
-    let url = '/api/v1/entity/pages?fields=name,page_type&sort=name&filter[name]=' + page_name;
-    cy.get_rest_endpoint(url, 'GET').then($resp => {
-        let id = $resp.body.data[0].id;
-        return id;
-    });
-});
+// Cypress.Commands.add('get_page_id_by_name', function(page_name) {
+//     let url = '/api/v1/entity/pages?fields=name,page_type&sort=name&filter[name]=' + page_name;
+//     cy.get_rest_endpoint(url, 'GET').then($resp => {
+//         let id = $resp.body.data[0].id;
+//         return id;
+//     });
+// });
 
-Cypress.Commands.add('get_page_mode', function() {
-    cy.get_page().then(page => {
-        return page.get_mode();
-    });
-});
 
-Cypress.Commands.add('logout', function() {
-    cy.visit('/user/logout');
-});
+
+// Cypress.Commands.add('logout', function() {
+//     cy.visit('/user/logout');
+// });
 
 Cypress.Commands.add('prep_regression_spec', function() {
     cy.get_access_token();
     cy.set_network_routes();
-    cy.login_admin();
-    /* Ensure these changes to admin user
-      - Remove all stupid app welcome dialogs
-      - Language setting is English
-    */
-    let data = {
-        app_welcomes: [],
-        language: 'en',
-    };
-    cy.edit_entity('HumanUser', Cypress.config('admin_id'), data);
-
-    // Conditionally create the project that will be your test project
-    const p_name = 'Regression Suite Project';
-    cy
-        .conditionally_create('Project', {
-            name: p_name,
-            filters: [['name', 'is', p_name]],
-        })
-        .then(id => {
-            Cypress.config('TEST_PROJECT', { id: id });
-        }); // end cy.conditionally_create
+    cy.login_admin().then(() => {
+        // Remove all app welcome dialogs
+        // Ensure Language setting is English
+        cy.edit_entity('HumanUser', Cypress.config('admin_id'), {
+            app_welcomes: [],
+            language: 'en',
+        });
+    })
 });
 
 Cypress.Commands.add('set_field_in_new_entity_form', function(props = {}) {
@@ -157,20 +130,7 @@ Cypress.Commands.add('set_field_in_new_entity_form', function(props = {}) {
     });
 });
 
-Cypress.Commands.add('set_theme', function(theme) {
-    // Ensure the theme is light or dark
-    theme = theme !== 'light' && theme !== 'dark' ? 'light' : theme;
-    // Get the SG object
-    cy.get_SG().then(SG => {
-        // Get the current theme...
-        let current_theme = SG.util.ThemeSwitcher.get_current_ui_theme();
-        if (current_theme !== theme) {
-            SG.util.ThemeSwitcher.set_ui_theme_preference(theme, this);
-        }
-    });
-    // Assert that the theme really is set properly...
-    cy.window().its('SG.util.ThemeSwitcher').invoke('get_current_ui_theme').should('eq', theme);
-});
+
 
 Cypress.Commands.add('upload_version', function(options) {
     let curl =
@@ -206,16 +166,12 @@ Cypress.Commands.add('wait_for_overlay_spinner', function() {
     cy.wait(500);
 });
 
-Cypress.Commands.add('select_row_by_id', function(id) {
-    // Note, this assumes your page is in list mode
-    // use :first because with grouping applied, this selector could appear multiple times
-    cy.get(`.row_selector[sg_selector="row_selector:record_id_${id}"]:first label`).click({ force: true });
-});
+
 
 Cypress.Commands.add('enable_versions_for_entities', function(entity_types) {
     cy.get_preference('has_versions').then(pref => {
         // Convert to an array - handle the possibility of an empty preference
-        let version_entities = pref === {} ? [] : pref.has_versions.split(',');
+        let version_entities = (pref === {}) ? [] : pref.has_versions.split(',');
         for (var i = 0; i < entity_types.length; i++) {
             let this_entity = entity_types[i];
             if (!version_entities.includes[this_entity]) {

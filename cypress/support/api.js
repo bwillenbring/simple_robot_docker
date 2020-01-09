@@ -24,19 +24,26 @@ export function clear_thumbnail(entity_type, id) {
 
 
 export function get_rest_endpoint({
-    url,
+    url = '',
     method = 'GET',
     failOnStatusCode = true,
-    data = { },
+    data = {},
     content_type = 'application/json',
     response_content_type = '',
     log_command = true,
-    custom_request_headers = { },
-    request_headers = { Authorization: `Bearer ${Cypress.config('TOKEN').body.access_token}` }
+    custom_request_headers = {},
     } = { }) {
-        // Always set
-        request_headers.content_type = content_type;
-        request_headers.accept = (response_content_type !== '') ? response_content_type : null
+        // Set the request headers and add custom headers if necessary
+        const request_headers = {
+            ...{
+                Authorization: 'Bearer ' + Cypress.config('TOKEN').body.access_token,
+                'content-type': content_type,
+            },
+            ...custom_request_headers,
+        };
+
+        // Set the request headers accept param if response_content_type is given
+        if (response_content_type !== '') { request_headers.accept = response_content_type }
 
         // Return a cy.request
         return cy
@@ -48,9 +55,6 @@ export function get_rest_endpoint({
                 failOnStatusCode: failOnStatusCode,
                 followRedirect: false,
                 log: log_command,
-            })
-            .then(resp => {
-                return resp;
             });
     }
 

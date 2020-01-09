@@ -169,10 +169,17 @@
 
  // This ensures that your session and cookies are destroyed
  // It should be invoked prior to the running of each test case
- Cypress.Commands.add('logout', function() {
-     cy.request('/user/logout').then($resp => {
-         assert.isTrue($resp.status == 200, 'Logout good!');
-     });
+ Cypress.Commands.add('logout', function({browser = false}) {
+     if (browser) {
+         // Navigate to the logout page
+         cy.visit('/user/logout');
+         cy.url().should('contain', '/user/login');
+     }
+     else {
+         cy.request('/user/logout').then($resp => {
+             assert.isTrue($resp.status == 200, 'Logout good!');
+         });
+     }
  });
 
  // dismiss the term of use
@@ -199,5 +206,80 @@
                  cy.url().should('not.contains', '/profile_data');
              });
          }
+     });
+ });
+
+ // cy.find_user_by_login('login_value')
+ // returns id (number)
+ Cypress.Commands.add('find_user_id_by_login', function(login) {
+     cy.get_rest_endpoint('/api/v1/entity/HumanUsers?fields=id&filter[login]=' + login).then(resp => {
+         // console.log(JSON.stringify(resp.body.data, undefined, 2));
+         if (resp.body.data) {
+             return resp.body.data[0].id;
+         } else {
+             return false;
+         }
+     });
+ });
+
+
+ // cy.login_as_user
+ // does request-based login, but also handles the profile dialog introduced in [SG-11729]
+ Cypress.Commands.add('login_as_user', function(USER, page = '') {
+     // declare user_id here so it can be set inside the promise scope
+     let user_id;
+     // Get the id of the user...
+     cy.find_user_id_by_login(USER.login).then($id => {
+         user_id = $id;
+         cy.log('found user id', user_id);
+
+         cy.clearCookies().then(() => {
+             cy
+                 .request({
+                     method: 'POST',
+                     url: '/user/login',
+                     form: true,
+                     followRedirect: true, // turn on/off following redirects
+                     body: {
+                         'user[login]': USER.login,
+                         'user[password]': USER.password,
+                         ignore_browser_check: 1,
+                     },
+                 })
+                 .then(resp => {
+                     // Set your persistent session vars
+                     let csrf_name = 'csrf_token_u' + user_id;
+                     cy.getCookie(csrf_name).then(cookie => {
+                         // store csrf_name cookie as a cypress config
+                         Cypress.config(csrf_name, cookie.value);
+                     });
+                     cy.getCookie('_session_id').then(cookie => {
+                         // store _session_id cookie as a cypress config
+                         Cypress.config('_session_id', cookie.value);
+                     });
+                 })
+                 .then(() => {
+                     // Navigate to next page
+                     cy.visit(page);
+                     // Handle profile data dialog
+                     cy.profile_data_page(page);
+                 });
+         });
+     });
+ });
+
+
+ Cypress.Commands.add('login_as_client', function(client_id, access_key) {
+     cy.log('----------------------------------------');
+     cy.log('client_id', client_id);
+     cy.log('access_key', access_key);
+     cy.log('----------------------------------------');
+     // /client_review_site?share=Dpp5uhijF9eolw
+     cy.clearCookies().then(() => {
+         cy.request('/client_review_site?share=' + access_key).then($resp => {
+             cy.getCookie('csrf_token_u' + client_id).then(cookie => {
+                 Cypress.config('client_csrf_token', cookie.value);
+             });
+         });
      });
  });

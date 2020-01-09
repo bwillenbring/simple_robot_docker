@@ -25,7 +25,6 @@ Utility functions
  *
  */
 Cypress.Commands.overwrite('log', (originalFn, message, options) => {
-
     cy.task('append_log', message).then(() => {
         return originalFn(message, options);
     });
@@ -153,4 +152,19 @@ Cypress.Commands.add('typeTab', (shiftKey, ctrlKey) => {
         shiftKey: shiftKey,
         ctrlKey: ctrlKey,
     });
+});
+
+Cypress.Commands.add('set_theme', function(theme) {
+    // Ensure the theme is light or dark
+    theme = theme !== 'light' && theme !== 'dark' ? 'light' : theme;
+    // Get the SG object
+    cy.get_SG().then(SG => {
+        // Get the current theme...
+        let current_theme = SG.util.ThemeSwitcher.get_current_ui_theme();
+        if (current_theme !== theme) {
+            SG.util.ThemeSwitcher.set_ui_theme_preference(theme, this);
+        }
+    });
+    // Assert that the theme really is set properly...
+    cy.window().its('SG.util.ThemeSwitcher').invoke('get_current_ui_theme').should('eq', theme);
 });

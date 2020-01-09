@@ -186,8 +186,15 @@ export function revive_entity(entity_type, id) {
     });
 }
 
-export function search_entities(entity_type, filters = [], fields = ['id'], size=0, sort = '-id') {
-    let endpoint = `/api/v1/entity/${entity_type}/_search?sort=${sort}`
+export function search_entities({
+    entity_type = '',
+    filters = [],
+    fields = ['id'],
+    size,
+    sort = '-id'
+} = { }) {
+    // const endpoint = `/api/v1/entity/${entity_type}/_search?sort=${sort}`
+    const endpoint = `/api/v1/entity/Projects/_search?sort=${sort}`
     if (size > 0) { endpoint += '&page[size]=' + size }
 
     const params = {
@@ -197,10 +204,13 @@ export function search_entities(entity_type, filters = [], fields = ['id'], size
             filters: filters,
             fields: fields
         },
-        content_type: 'application/vnd+shotgun.api3_array+json'
+        content_type: 'application/vnd+shotgun.api3_array+json',
+        failOnStatusCode: false
     }
+
     cy.get_rest_endpoint(params).then($resp => {
-        return $resp.body;
+        console.log($resp.body)
+        return $resp
     });
 }
 
@@ -252,19 +262,30 @@ export function get_schema() {
  * });
  *
  */
-export function conditionally_create(entity_type, data = { filters: [['id', 'is', 0]]}, fields = 'id') {
+export function conditionally_create({
+    entity_type = '',
+    data = { },
+    filters = [['id', 'is', 0]],
+    fields = ['id']
+} = { }) {
     // Try to find a matching entity based on the passed in filter
-    cy.search_entities(entity_type, data.filters, fields).then($resp => {
+    cy.search_entities({
+        entity_type: entity_type,
+        filters: filters,
+        fields: fields
+    }).then($resp => {
+
         // If search results are empty, then create the entity
-        if (!$resp.hasOwnProperty('data') || $resp.data.length == 0) {
+        if (! $resp.hasOwnProperty('data') || $resp.data.length == 0) {
             cy.log('no entity found');
-            // Before you create, remove the additional keys in the data object
-            delete data.key;
-            delete data.filters;
-            cy.create_entity(entity_type, data).then(id => {
-                return id;
-            });
+            // Before you create, remove the additional keys tha tmay exist in the data object
+            if (Object.keys(data).includes('key')) { delete data.key }
+            if (Object.keys(data).includes('filters')) { delete data.filters }
+
+            // Create the entity
+            return cy.create_entity(entity_type, data);
         } else {
+            cy.log(`I found an entity ${entity_type} to match ${filters.toString()}`);
             let id = $resp.data[0].id;
             return id;
         }

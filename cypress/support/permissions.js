@@ -1,13 +1,12 @@
 
-/*
-cy.reset_permission_group(permission_group)
-- `permission_group`
-  - Allowed values: ['artist', 'manager', 'admin']
-  - Default: 'artist'
-- Simulates a user clicking the 'Reset to Default' button from admin permissions page
-- Returns: response object from POST request to /page/reset_permission_group
-- Must have csrf token for this to work
-*/
+
+/**
+ * @function reset_permission_group
+ * @description Resets a given permission group (by name) to default
+ * @author Ben Willenbring <bwillenbring@gmail.com>
+ *
+ *
+ */
 export function reset_permission_group(permission_group = 'artist') {
     let url = '/page/reset_permission_group';
     let allowed_groups = ['manager', 'admin', 'artist'];
@@ -39,10 +38,15 @@ export function reset_permission_group(permission_group = 'artist') {
     }
 }
 
-
+/**
+ * @function duplicate_permission_role
+ * @description Duplicates a role (by Id)
+ * @author Ben Willenbring <bwillenbring@gmail.com>
+ *
+ */
 export function duplicate_permission_role({
-    role_id: 8,
-    new_role_name: `New Role ${String(Cypress.moment())}`
+    role_id = 8,
+    new_role_name = `New Role ${String(Cypress.moment())}`
 }) {
     const url = `/page/new_permission_group`
     const method = 'POST';
@@ -69,42 +73,51 @@ export function duplicate_permission_role({
 }
 
 
-/*
-cy.configure_permissions(permission_changes)
-- `permission_changes`
-  - Type: Array
-  - Example:
-    [{
-        permission_rule_set_code: 'manager',
-        rule_type: 'see_client_notes',
-         allow: true
-     }]
-*/
+/**
+ * @function configure_permissions_group
+ * @description Configures a permission role, using a spec
+ * @author Ben Willenbring <bwillenbring@gmail.com>
+ *
+ */
 export function configure_permissions_group(permission_changes = []) {
-    cy.log('Trying to set permissions');
-    let csrf = 'csrf_token_u' + Cypress.config('admin_id');
-    cy.log('----------------------------------------');
-    cy.log('Setting Permissions');
-    cy.log('----------------------------------------');
-    let url = 'page/set_permissions';
+    cy.get_csrf_token_value().then(csrf_token => {
+        const url = 'page/set_permissions';
+        // Form the body of your request
+        const data = {
+            permission_changes: permission_changes,
+            csrf_token: csrf_token,
+        };
+        // Stringify it...
+        data.permission_changes = JSON.stringify(data.permission_changes);
+        // Send the request
+        cy
+            .request({
+                url: url,
+                method: 'POST',
+                form: true,
+                body: data,
+                failOnStatusCode: false,
+            })
+            .then($resp => {
+                console.log($resp);
+            });
+    })
+}
 
-    //csrf_token: Cypress.config(csrf),
-    let data = {
-        permission_changes: permission_changes,
-        csrf_token: Cypress.config(csrf),
-    };
-    // Stringify it...
-    data.permission_changes = JSON.stringify(data.permission_changes);
-    // Send the request
-    cy
-        .request({
-            url: url,
-            method: 'POST',
-            form: true,
-            body: data,
-            failOnStatusCode: false,
-        })
-        .then($resp => {
-            console.log($resp);
-        });
+
+export function delete_permission_group(role, role_id) {
+    cy.get_csrf_token_value().then(csrf_token => {
+        if (! role) {
+            throw new Error('Permission role cannot be empty');
+        }
+        else {
+            const params = {
+                url: '/page/retire_permission_group',
+                method: 'POST',
+                set_id: role_id,
+                retarget_set_id: -1,
+                csrf_token: csrf_token
+            }
+        }
+    })
 }

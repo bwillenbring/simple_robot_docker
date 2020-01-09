@@ -220,9 +220,8 @@ Cypress.Commands.add('update_preference', ({ name, value, type = 'site' }) => {
  */
 Cypress.Commands.add('disable_custom_entity', function(entity_type) {
     cy.get_SG().then(SG => {
-        let pref = 'use_' + SG.schema.entity_types[entity_type].name_pluralized_underscored;
-        cy.log('Attempting to disable ' + entity_type);
-        let values = {};
+        const pref = `use_${SG.schema.entity_types[entity_type].name_pluralized_underscored}`;
+        const values = {};
         values[pref] = 'no';
         cy.set_preference(values);
     });
