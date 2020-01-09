@@ -49,12 +49,6 @@ jobs:
         PASSWORD: ${{ secrets.SG_PASSWORD }}
         TEST_PROJECT_ID: 66
 
-
-
-    steps:
-      - name: First Step => Checkout
-        uses: actions/checkout@v1
-
     steps:
       - name: First Step => Checkout
         uses: actions/checkout@v1
