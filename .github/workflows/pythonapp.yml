@@ -36,11 +36,11 @@ jobs:
     - uses: actions/download-artifact@v1
       with:
         name: my-artifact
-        path: shared_artifacts/TEST_PROJECT_ID.txt
+        path: shared_artifacts
 
     - run: |
         echo Reading in TEST_PROJECT_ID
-        cat shared_artifacts/TEST_PROJECT_ID.txt
+        cat shared_artifacts
 
     - name: Build the Cypress Docker Container
       run: |
