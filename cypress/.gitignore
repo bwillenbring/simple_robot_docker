@@ -1,15 +1,32 @@
 ###############################################################################
-# Top level
-
-###############################################################################
-# node_modules
+# Top level => ignore all (.) file extensions except git
+.*
+!.git*
 node_modules*
 
 ###############################################################################
 # videos
 videos/*.mp4
 
+# screenshots
+screenshots/*.png
+!reports/README.md
+
+# reports
+reports/*
+!reports/README.md
+
+# mochawesome
+mochawesome-report/*
+!mochawesome-report/README.md
+
 ###############################################################################
-# test/ Ignore everything except .robot files
-test/*
-!test/*.robot
+# cypress specs => first, ignore everything
+integration/*
+
+# allow 1st level .js files
+!integration/*.js
+
+# allow nested .js in these directories
+!integration/regressions/*.js
+!integration/workflow/*.js

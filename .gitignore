@@ -1,0 +1,6 @@
+*
+!README.md
+!.git*
+!cypress
+!robot
+!docker-compose.yml
