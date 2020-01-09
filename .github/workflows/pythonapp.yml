@@ -9,10 +9,16 @@ jobs:
     env:
         SURPRISE: From a different job!!!
     steps:
-    - name: Print 1 command
-      run: |
-        echo echoing surpirse...
-        echo $SURPRISE
+    - uses: actions/checkout@v1
+    - run: |
+        echo Attempting to create a shared_artifacts directory
+        mkdir -p shared_artifacts
+        echo 45 > shared_artifacts/TEST_PROJECT_ID.txt
+    - uses: actions/upload-artifact@v1
+      with:
+        name: my-artifact
+        path: shared_artifacts
+
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
@@ -26,6 +32,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+
+    - uses: actions/download-artifact@v1
+      with:
+        name: my-artifact
+        path: shared_artifacts/TEST_PROJECT_ID.txt
+
+    - run: |
+        echo Reading in TEST_PROJECT_ID
+        cat shared_artifacts/TEST_PROJECT_ID.txt
+
     - name: Build the Cypress Docker Container
       run: |
         echo echoing surpirse...
