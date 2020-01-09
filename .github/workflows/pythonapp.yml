@@ -47,6 +47,12 @@ jobs:
         BROWSER: ${{ secrets.SG_BROWSER }}
         USERNAME: ${{ secrets.SG_USERNAME }}
         PASSWORD: ${{ secrets.SG_PASSWORD }}
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        SOURCE_DIR: 'cypress/mochawesome-report'
+        DEST_DIR: 'cypress'
         TEST_PROJECT_ID: 66
 
     steps:
@@ -65,19 +71,17 @@ jobs:
           ls shared_artifacts
           cat shared_artifacts/TEST_PROJECT_ID.txt
 
+      - name: Reset TEST_PROJECT_ID
+        run: |
+          export TEST_PROJECT_ID=$(cat shared_artifacts/TEST_PROJECT_ID.txt)
+          echo "Reset Test Project Id to... $TEST_PROJECT_ID"
+
       - name: Build the Cypress Docker Container
         run: |
-          echo echoing surpirse...
-          echo $SURPRISE
+          printenv
           docker-compose build cypress
 
       - name: Up the Cypress Container
-        env:
-          BASE_URL: ${{ secrets.SG_BASE_URL }}
-          BROWSER: ${{ secrets.SG_BROWSER }}
-          USERNAME: ${{ secrets.SG_USERNAME }}
-          PASSWORD: ${{ secrets.SG_PASSWORD }}
-          TEST_PROJECT_ID: 66
         run: |
           python cypress/testLauncher/testLauncher.py
           docker-compose up cypress
@@ -90,13 +94,6 @@ jobs:
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: 'cypress/mochawesome-report'
-          DEST_DIR: 'cypress'
 
   robot:
     name: Robot & Selenium Stage
