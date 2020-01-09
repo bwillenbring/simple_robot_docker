@@ -71,13 +71,14 @@ jobs:
           ls shared_artifacts
           cat shared_artifacts/TEST_PROJECT_ID.txt
 
-    - name: Build the Cypress Docker Container
-      run: |
-        echo echoing surpirse...
-        echo $SURPRISE
-        docker-compose build cypress
-    - name: Up the Cypress Container
-      env:
+      - name: Build the Cypress Docker Container
+        run: |
+          echo echoing surpirse...
+          echo $SURPRISE
+          docker-compose build cypress
+
+      - name: Up the Cypress Container
+        env:
           BASE_URL: ${{ secrets.SG_BASE_URL }}
           BROWSER: ${{ secrets.SG_BROWSER }}
           USERNAME: ${{ secrets.SG_USERNAME }}
@@ -86,6 +87,7 @@ jobs:
       run: |
         python cypress/testLauncher/testLauncher.py
         docker-compose up cypress
+
     - name: Move Cypress assets to mochawesome-report dir
       run: |
         cp -r cypress/videos cypress/mochawesome-report
