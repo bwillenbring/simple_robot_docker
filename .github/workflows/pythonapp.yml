@@ -8,26 +8,29 @@ jobs:
     runs-on: ubuntu-latest
     env:
         SURPRISE: From a different job!!!
+
     steps:
-    - uses: actions/checkout@v1
+      - name: First Step => Checkout 
+        uses: actions/checkout@v1
+        uses: actions/setup-python@v1
+          with:
+            python-version: 2.7
 
-    - name: Create a test Project with Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: 2.7
+      - name: Install Python and create Test Project
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r robot/requirements.txt
+          export TEST_PROJECT_ID2=$(python robot/testLauncher/create_test_project.py)
+          echo "Created Test Project $TEST_PROJECT_ID2"
+          echo Saving to shared_artifacts
+          mkdir -p shared_artifacts
+          echo $TEST_PROJECT_ID2 > shared_artifacts/TEST_PROJECT_ID.txt
 
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r robot/requirements.txt
-        export TEST_PROJECT_ID2=$(python robot/testLauncher/create_test_project.py)
-        echo "Created Test Project $TEST_PROJECT_ID2"
-        echo Saving to shared_artifacts
-        mkdir -p shared_artifacts
-        echo $TEST_PROJECT_ID2 > shared_artifacts/TEST_PROJECT_ID.txt
-    - uses: actions/upload-artifact@v1
-      with:
-        name: my-artifact
-        path: shared_artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v1
+          with:
+            name: my-artifact
+            path: shared_artifacts
 
   cypress:
     name: Cypress
