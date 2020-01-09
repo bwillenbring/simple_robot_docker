@@ -39,8 +39,8 @@ jobs:
         path: shared_artifacts
 
     - run: |
-        echo Reading in TEST_PROJECT_ID
-        cat shared_artifacts
+        echo Running ls on shared_artifacts dir
+        ls shared_artifacts
 
     - name: Build the Cypress Docker Container
       run: |
