@@ -33,6 +33,9 @@ function rewrite_cypress_configs() {
     }
     // Write the new config
     write(configs, path_to_config);
+
+    // console log the output
+    console.log(`TEST_PROJECT_ID: ${process.env['TEST_PROJECT_ID']}`);
 }
 
 function run_cypress() {

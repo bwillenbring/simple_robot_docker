@@ -1,10 +1,10 @@
-name: Run Tests
+name: Cypress and Robot
 
 on: [push]
 
 jobs:
   set_shared_env_vars:
-    name: Set Shared Environment Variables
+    name: Test Run Setup
     runs-on: ubuntu-latest
     env:
         SURPRISE: From a different job!!!
@@ -72,15 +72,12 @@ jobs:
           cat shared_artifacts/TEST_PROJECT_ID.txt
           echo Cypress should use TEST_PROJECT_ID from txt file
 
-      - name: Build the Cypress Docker Container
+      - name: Build and start the Cypress Docker Container
         run: |
           export TEST_PROJECT_ID=$(cat shared_artifacts/TEST_PROJECT_ID.txt)
           echo "Reset Test Project Id to... $TEST_PROJECT_ID"
           printenv
           docker-compose build cypress
-
-      - name: Up the Cypress Container
-        run: |
           docker-compose up cypress
 
       - name: Move Cypress assets to mochawesome-report dir
@@ -93,7 +90,7 @@ jobs:
           args: --acl public-read --follow-symlinks --delete
 
   robot:
-    name: Robot & Selenium Stage
+    name: Robot
     needs: set_shared_env_vars
     runs-on: ubuntu-latest
     env:
