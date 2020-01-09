@@ -27,5 +27,7 @@ integration/*
 !integration/*.js
 
 # allow regressions and workflow directories
-!integration/regressions/*
-!integration/workflow/*
+!integration/regressions
+!integration/regressions/*.js
+!integration/workflow
+!integration/workflow/*.js
