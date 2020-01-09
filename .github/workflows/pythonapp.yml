@@ -84,24 +84,25 @@ jobs:
           USERNAME: ${{ secrets.SG_USERNAME }}
           PASSWORD: ${{ secrets.SG_PASSWORD }}
           TEST_PROJECT_ID: 66
-      run: |
-        python cypress/testLauncher/testLauncher.py
-        docker-compose up cypress
+        run: |
+          python cypress/testLauncher/testLauncher.py
+          docker-compose up cypress
 
-    - name: Move Cypress assets to mochawesome-report dir
-      run: |
-        cp -r cypress/videos cypress/mochawesome-report
-    - name: Publish Cypress assets to S3
-      uses: jakejarvis/s3-sync-action@master
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        SOURCE_DIR: 'cypress/mochawesome-report'
-        DEST_DIR: 'cypress'
+      - name: Move Cypress assets to mochawesome-report dir
+        run: |
+          cp -r cypress/videos cypress/mochawesome-report
+
+      - name: Publish Cypress assets to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: 'cypress/mochawesome-report'
+          DEST_DIR: 'cypress'
 
   robot:
     name: Robot & Selenium Stage
