@@ -26,11 +26,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r robot/requirements.txt
-          export TEST_PROJECT_ID2=$(python robot/testLauncher/create_test_project.py)
-          echo "Created Test Project $TEST_PROJECT_ID2"
+          export TEST_PROJECT_ID=$(python robot/testLauncher/create_test_project.py)
+          echo "Created Test Project $TEST_PROJECT_ID"
           echo Saving to shared_artifacts
           mkdir -p shared_artifacts
-          echo $TEST_PROJECT_ID2 > shared_artifacts/TEST_PROJECT_ID.txt
+          echo $TEST_PROJECT_ID > shared_artifacts/TEST_PROJECT_ID.txt
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v1
@@ -70,14 +70,12 @@ jobs:
           echo Running ls on shared_artifacts dir
           ls shared_artifacts
           cat shared_artifacts/TEST_PROJECT_ID.txt
-
-      - name: Reset TEST_PROJECT_ID
-        run: |
-          export TEST_PROJECT_ID=$(cat shared_artifacts/TEST_PROJECT_ID.txt)
-          echo "Reset Test Project Id to... $TEST_PROJECT_ID"
+          echo Cypress should use TEST_PROJECT_ID from txt file
 
       - name: Build the Cypress Docker Container
         run: |
+          export TEST_PROJECT_ID=$(cat shared_artifacts/TEST_PROJECT_ID.txt)
+          echo "Reset Test Project Id to... $TEST_PROJECT_ID"
           printenv
           docker-compose build cypress
 
