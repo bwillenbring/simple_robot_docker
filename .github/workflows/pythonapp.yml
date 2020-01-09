@@ -49,17 +49,27 @@ jobs:
         PASSWORD: ${{ secrets.SG_PASSWORD }}
         TEST_PROJECT_ID: 66
 
+
+
     steps:
-    - uses: actions/checkout@v1
+      - name: First Step => Checkout
+        uses: actions/checkout@v1
 
-    - uses: actions/download-artifact@v1
-      with:
-        name: my-artifact
-        path: shared_artifacts
+    steps:
+      - name: First Step => Checkout
+        uses: actions/checkout@v1
 
-    - run: |
-        echo Running ls on shared_artifacts dir
-        ls shared_artifacts
+      - name: Download Artifacts from Step 1
+        uses: actions/download-artifact@v1
+        with:
+          name: artifact
+          path: shared_artifacts
+
+      - name: Confirm Downloaded Artifacts
+        run: |
+          echo Running ls on shared_artifacts dir
+          ls shared_artifacts
+          cat shared_artifacts/TEST_PROJECT_ID.txt
 
     - name: Build the Cypress Docker Container
       run: |
