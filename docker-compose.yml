@@ -17,7 +17,7 @@ services:
       # These 5 env vars are set by the CI build server
       # If running locally, set them manually
       BASE_URL: "${BASE_URL}"
-      BROWSER: "${BROWSER}"
+      BROWSER: "chrome"
       USERNAME: "${USERNAME}"
       PASSWORD: "${PASSWORD}"
       TEST_PROJECT_ID: "${TEST_PROJECT_ID}"
