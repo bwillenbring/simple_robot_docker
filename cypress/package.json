@@ -20,11 +20,10 @@
   },
   "homepage": "https://github.com/bwillenbring/simple_robot_docker#readme",
   "devDependencies": {
-    "cypress": "3.6.0",
-    "cypress-plugin-retries": "^1.5.2",
-    "mocha": "5.2.0",
-    "mochawesome": "4.1.0",
-    "mochawesome-merge": "4.0.0",
-    "mochawesome-report-generator": "4.1.0"
+    "cypress": "6.5.0",
+    "mocha": "^9.1.2",
+    "mochawesome": "6.1.1",
+    "mochawesome-merge": "4.1.0",
+    "mochawesome-report-generator": "5.2.0"
   }
 }
