@@ -1,2 +1,8 @@
 # Mac OS
 *.DS_Store
+
+# Cypress Reports 
+cypress/mochawesome-report/*
+cypress/reports/*
+cypress/screenshots/*
+cypress/videos/*
