@@ -20,9 +20,9 @@ Do a google search and click on the top search result
     # Wait for location to change
     Wait Until Location Contains    search?
     # Wait for at least 1 search result to be visible on the page
-    Wait Until Element Is Visible    css:div.rc div.r a
+    Wait Until Element Is Visible       css:div[data-hveid][data-ved]:first-of-type a:first-of-type
     # Click the first search result's link
-    Click Element    css:div.rc div.r a
+    Click Element       css:div[data-hveid][data-ved]:first-of-type a:first-of-type
     # Wait for the url to no longer be on google.com
     Wait For Condition    return ! (location.href.includes('google.com'))
     # Wait for the page to be ready
