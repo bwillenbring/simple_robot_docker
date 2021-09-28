@@ -6,46 +6,78 @@
 
 ![repoImage]
 
-**Includes the following:**
-- **Github Actions Workflow**
-  - [Runs Robot and Cypress tests in parallel](.github/workflows/pythonapp.yml)
-  - [Sends the Cypress mochawesome html report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/cypress/mochawesome.html)
-  - [Sends the robot report to an AWS S3 bucket](https://github-bwillenbring.s3.us-east-2.amazonaws.com/robot/report.html)
+## This repo uses Github Workflow Actions
+  - [Workflow definition](.github/workflows/pythonapp.yml)
 
+## Output of the workflow:
+  1. [Cypress Mochawesome Report](https://github-bwillenbring.s3.us-east-2.amazonaws.com/cypress/mochawesome.html) 
+  2. [Robot Report](https://github-bwillenbring.s3.us-east-2.amazonaws.com/robot/report.html)
 
-- **Cypress**
-  - [Runs a few simple cypress specs](cypress/integration/)
+## Cypress and Robot are Docker images
+About the images:
+  - Cypress
+      - Uses `Cypress v6.5` 
+      - [Runs a few simple cypress specs](cypress/integration/)
+  - Robot
+      - Uses `python 2.7` and `robot 3.1.2`
+      - [Runs a few simple Robot specs](robot/test/)
+      - [Includes a sample Robot Listener in the `listeners` directory](robot/listeners/CustomListener.py) - with empty method calls that hook into start and end events
+      - [Includes a sample test launch script in the `testLauncher` directory](robot/testLauncher/testLauncher.py)
+      - [`requirements.txt`](robot/requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
 
-
-- **Robot**
-  - [Runs a few simple Robot specs](robot/test/)
-  - [Includes a sample Robot Listener in the `listeners` directory](robot/listeners/CustomListener.py) - with empty method calls that hook into start and end events
-  - [Includes a sample test launch script in the `testLauncher` directory](robot/testLauncher/testLauncher.py)
-  - [`requirements.txt`](robot/requirements.txt) - if you'd like to install the python libs to run these tests on your host machine
-
-**Assumes the following:**
-- You have git, and can clone a repo
-- You have `Docker 18.06` or higher -- [You can install Docker here](https://docs.docker.com/install/).
 
 ----
 
-# Installation & How to Use this Repo
+# How to install and use this repo locally
+## Assumes the following
+- You have git, and can clone a repo
+- You have `Docker 18.06` or higher -- [You can install Docker here](https://docs.docker.com/install/).
+
+
 ## 1. Clone this repo locally
 ```
 git clone https://github.com/bwillenbring/simple_robot_docker.git
 ```
+Then `cd` into the directory that contains `docker-compose.yml`.
 
 ----
 
-## 2. Build and up the container
-`cd` into the directory that contains `docker-compose.yml`, then do this...
+## 2. Bring up the `cypress` container
 ```
+# If it's not yet built...
+docker-compose up --build cypress
+
+# If it's already build...
+docker-coompose up cypress
+```
+You should then see this kind of output...
+```
+WARNING: The BASE_URL variable is not set. Defaulting to a blank string.
+WARNING: The USERNAME variable is not set. Defaulting to a blank string.
+WARNING: The PASSWORD variable is not set. Defaulting to a blank string.
+WARNING: The TEST_PROJECT_ID variable is not set. Defaulting to a blank string.
+Starting simple_robot_docker_cypress_1 ... done
+Attaching to simple_robot_docker_cypress_1
+cypress_1  | npm WARN prepare removing existing node_modules/ before installation
+```
+
+### 2.1 What ☝🏽 that does
+  - Executes the Cypress specs inside the container (eg: [simple-spec.js](cypress/integration/simple-spec.js))
+  - Video records the test run into the mounted volume in `/cypress/videos/`
+
+## 3. Bring up the `robot` container
+```
+# If it's not yet build...
 docker-compose up --build robot
+
+# If it's already build...
+docker-compose up robot
 ```
 
-Doing the above ^^ will result in the execution of a single Robot test (configured in `docker-compose.yml`) that runs headlessly inside the Docker container - [simple-keywords.robot](robot/test/simple-keywords.robot).
+### 3.1 What ☝🏽 that does
+  - Executes the Robot tests (configured in `docker-compose.yml`) headlessly inside the Docker container - (eg: [simple-keywords.robot](robot/test/simple-keywords.robot))
+  - You should then see this kind of output...
 
-### You'll see this kind of output...
 ```
 Starting robotv3_robot_1 ... done
 Attaching to robotv3_robot_1
