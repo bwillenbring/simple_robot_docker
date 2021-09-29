@@ -1,0 +1,26 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true,
+        "node": true,
+        "cypress/globals": true
+    },
+    "ignorePatterns": ["mochawesome-*/**", "plugins/*/**"],
+    "extends": ["eslint:recommended", "prettier", "plugin:sonarjs/recommended"],
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "plugins": ["cypress"],
+    "rules": {
+        "no-unused-vars": "warn",
+        "sonarjs/no-duplicate-string": ["error", 5],
+        "cypress/no-assigning-return-values": "error",
+        "cypress/no-unnecessary-waiting": "error",
+        "cypress/assertion-before-screenshot": "warn",
+        "cypress/no-force": "warn",
+        "cypress/no-async-tests": "error",
+        "cypress/no-pause": "error"
+    }
+}

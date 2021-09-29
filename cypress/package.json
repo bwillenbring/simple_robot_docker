@@ -4,7 +4,8 @@
   "description": "Simple Cypress tests",
   "main": "run.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,11 @@
   "homepage": "https://github.com/bwillenbring/simple_robot_docker#readme",
   "devDependencies": {
     "cypress": "6.5.0",
+    "cypress-wait-until": "^1.7.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-sonarjs": "^0.10.0",
     "mocha": "^9.1.2",
     "mochawesome": "6.1.1",
     "mochawesome-merge": "4.1.0",
