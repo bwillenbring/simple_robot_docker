@@ -7,78 +7,75 @@ jobs:
     name: Cypress
     runs-on: ubuntu-latest
     env:
-        BASE_URL: ${{ secrets.SG_BASE_URL }}
-        BROWSER: ${{ secrets.SG_BROWSER }}
-        USERNAME: ${{ secrets.SG_USERNAME }}
-        PASSWORD: ${{ secrets.SG_PASSWORD }}
-        TEST_PROJECT_ID: 66
+      BASE_URL: ${{ secrets.SG_BASE_URL }}
+      BROWSER: ${{ secrets.SG_BROWSER }}
+      USERNAME: ${{ secrets.SG_USERNAME }}
+      PASSWORD: ${{ secrets.SG_PASSWORD }}
+      TEST_PROJECT_ID: 66
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Build the Cypress Docker Container
-      run: |
-        docker-compose build cypress
-    - name: Up the Cypress Container
-      run: |
-        docker-compose up cypress
-    - name: Move Cypress assets to mochawesome-report dir
-      run: |
-        cp -r cypress/videos cypress/mochawesome-report
-    - name: Publish Cypress assets to S3
-      uses: jakejarvis/s3-sync-action@master
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        SOURCE_DIR: 'cypress/mochawesome-report'
-        DEST_DIR: 'cypress'
+      - uses: actions/checkout@v1
+      - name: Build the Cypress Docker Container
+        run: |
+          docker-compose build cypress
+      - name: Up the Cypress Container
+        run: |
+          docker-compose up cypress
+      - name: Publish Cypress assets to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: "cypress/mochawesome-report"
+          DEST_DIR: "cypress"
 
   robot:
     name: Robot & Selenium Stage
     runs-on: ubuntu-latest
     env:
-        BASE_URL: ${{ secrets.SG_BASE_URL }}
-        BROWSER: ${{ secrets.SG_BROWSER }}
-        USERNAME: ${{ secrets.SG_USERNAME }}
-        PASSWORD: ${{ secrets.SG_PASSWORD }}
+      BASE_URL: ${{ secrets.SG_BASE_URL }}
+      BROWSER: ${{ secrets.SG_BROWSER }}
+      USERNAME: ${{ secrets.SG_USERNAME }}
+      PASSWORD: ${{ secrets.SG_PASSWORD }}
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v1
-      with:
-        python-version: 2.7
-    - name: Install python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r robot/requirements.txt
-    - name: Lint with flake8
-      run: |
-        pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Run Robot Specs in Docker Container
-      run: |
-        export TEST_PROJECT_ID=$(python robot/testLauncher/create_test_project.py)
-        echo "Created Test Project $TEST_PROJECT_ID"
-        printenv
-        robot --outputdir robot/reports robot/test/simple-variables.robot
-        echo "Building the docker image..."
-        docker-compose up --build robot
-        echo "DONE!"
-    - name: Publish assets to S3
-      uses: jakejarvis/s3-sync-action@master
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        SOURCE_DIR: 'robot/reports'
-        DEST_DIR: 'robot'
+      - uses: actions/checkout@v1
+      - name: Set up Python 2.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 2.7
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r robot/requirements.txt
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Run Robot Specs in Docker Container
+        run: |
+          export TEST_PROJECT_ID=$(python robot/testLauncher/create_test_project.py)
+          echo "Created Test Project $TEST_PROJECT_ID"
+          printenv
+          robot --outputdir robot/reports robot/test/simple-variables.robot
+          echo "Building the docker image..."
+          docker-compose up --build robot
+          echo "DONE!"
+      - name: Publish assets to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: "robot/reports"
+          DEST_DIR: "robot"
