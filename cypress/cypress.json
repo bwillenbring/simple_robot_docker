@@ -1,4 +1,5 @@
 {
+    "baseUrl": "https://ben-willenbring.com",
     "chromeWebSecurity": true,
     "defaultCommandTimeout": 20000,
     "fileServerFolder": "",
@@ -7,18 +8,18 @@
     "modifyObstructiveCode": false,
     "pluginsFile": "plugins/index.js",
     "requestTimeout": 10000,
-    "screenshotsFolder": "screenshots",
+    "screenshotsFolder": "mochawesome-report/screenshots",
     "supportFile": "support/index.js",
-    "videosFolder": "videos",
+    "videosFolder": "mochawesome-report/videos",
     "viewportHeight": 900,
     "viewportWidth": 1440,
     "watchForFileChanges": false,
     "reporter": "mochawesome",
     "reporterOptions": {
-      "reportDir": "reports",
-      "overwrite": false,
-      "html": false,
-      "json": true,
-      "timestamp": "mmddyyyy_HHMMss"
+        "reportDir": "reports",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
     }
 }
