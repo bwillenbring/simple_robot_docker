@@ -1,13 +1,5 @@
 /// <reference types="cypress" />
-describe('Simple web site spec', function () {
-    it('checks home page for doodler', function () {
-        cy.visit('')
-        // assert that the body contains the text pattern you
-        cy.get('body').contains(/doodler/i)
-        // inline the video recording of the spec in the mochawesome-report
-        cy.addTestContext('Video', `./videos/${Cypress.spec.name}.mp4`)
-    })
-
+describe('AI Story Generator', function () {
     it('generates an ai story', function () {
         cy.visit('/willenblog/animatronic-ai-story-generator')
         // assert the story container text is empty
@@ -22,13 +14,16 @@ describe('Simple web site spec', function () {
             cy
                 .get('#story_container')
                 .then((story) => Cypress.$(story).text().length > 100)
-        )
-        // Screenshot the story
-        cy.get('#story_container').screenshot('ai_story')
-        // inline the image of the story
-        cy.addTestContext(
-            'AI Story',
-            `./screenshots/${Cypress.spec.name}/ai_story.png`
-        )
+        ).then(() => {
+            // Screenshot the story
+            cy.get('#story_container').screenshot('ai_story')
+            // inline the image of the story
+            cy.addTestContext(
+                'AI Story',
+                `./screenshots/${Cypress.spec.name}/ai_story.png`
+            )
+            // inline the video recording of the spec in the mochawesome-report
+            cy.addTestContext('Video', `./videos/${Cypress.spec.name}.mp4`)
+        })
     })
 })

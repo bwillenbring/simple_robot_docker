@@ -1,5 +1,5 @@
-// Wait Until 
-import 'cypress-wait-until';
+// Wait Until
+import 'cypress-wait-until'
 
 /**
  * function log
@@ -25,12 +25,13 @@ import 'cypress-wait-until';
  */
 Cypress.Commands.overwrite('log', (originalFn, message, options) => {
     cy.task('append_log', message).then(() => {
-        return originalFn(message, options);
-    });
-});
+        return originalFn(message, options)
+    })
+})
 
-Cypress.Commands.add('wait_for_page_to_load', () => cy.document().its('readyState').should('eq', 'complete') );
-
+Cypress.Commands.add('wait_for_page_to_load', () =>
+    cy.document().its('readyState').should('eq', 'complete')
+)
 
 Cypress.Commands.add('run_python_script', (script, args) => {
     // Accepts 2 args:
@@ -48,31 +49,29 @@ Cypress.Commands.add('run_python_script', (script, args) => {
         Cypress.config('admin_login') +
         ' ' +
         '-admin_pwd ' +
-        Cypress.config('admin_pwd');
+        Cypress.config('admin_pwd')
 
     switch (args) {
         case undefined:
         case null:
         case '':
-            args = default_args;
-            break;
+            args = default_args
+            break
         default:
             //args is a non-empty string
-            args = default_args + ' ' + args;
-            break;
+            args = default_args + ' ' + args
+            break
     }
     // Now execute the python, and grab the printed output
-    let cmd_string = 'python fixtures/python/' + script + ' ' + args;
-    cy.exec(cmd_string).then($resp => {
+    let cmd_string = 'python fixtures/python/' + script + ' ' + args
+    cy.exec(cmd_string).then(($resp) => {
         //Trap and return the printed output in the .stdout
-        return $resp.stdout;
-    });
-});
-
-
+        return $resp.stdout
+    })
+})
 
 // Require mochawesome's addContext submodule
-const addContext = require('mochawesome/addContext');
+const addContext = require('mochawesome/addContext')
 /**
  * @function addTestContext
  * @description Documentation-related helper method. Allows test writers to inserts text, images, or links into mochawesome-reports generated from Cypress specs being run. More available <a href="https://www.npmjs.com/package/mochawesome#addcontexttestobj-context">here</a>.
@@ -104,10 +103,30 @@ const addContext = require('mochawesome/addContext');
  * cy.addTestContext('<b>Inline html</b>'); // This prints - but is ALWAYS escaped (never interpreted)
  *--------------------
  */
-Cypress.Commands.add('addTestContext', function(title, value = null) {
+Cypress.Commands.add('addTestContext', function (title, value = null) {
     if (!value) {
-        cy.once('test:after:run', test => addContext({ test }, title));
+        cy.once('test:after:run', (test) => addContext({ test }, title))
     } else {
-        cy.once('test:after:run', test => addContext({ test }, { title, value }));
+        cy.once('test:after:run', (test) =>
+            addContext({ test }, { title, value })
+        )
     }
-});
+})
+
+Cypress.Commands.add(
+    'attach_file',
+    { prevSubject: 'element' },
+    (input, fileName, fileType) => {
+        cy.fixture(fileName)
+            .then((content) =>
+                Cypress.Blob.base64StringToBlob(content, fileType)
+            )
+            .then((blob) => {
+                const testFile = new File([blob], fileName)
+                const dataTransfer = new DataTransfer()
+                dataTransfer.items.add(testFile)
+                input[0].files = dataTransfer.files
+                return input
+            })
+    }
+)
